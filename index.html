@@ -1,3 +1,5 @@
+<!-- Paste this code into your Blogger HTML page/post -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +24,9 @@
     .notification.show { display: flex;}
     #searchResult th, #searchResult td { white-space: nowrap; }
     #stickyBar { display: none; }
+    /* Modal fix for Blogger */
+    .modal-backdrop { z-index: 1040 !important; }
+    .modal { z-index: 1050 !important; }
   </style>
 </head>
 <body class="bg-light">
@@ -36,6 +41,10 @@
       </button>
       <button onclick="showSection('companyPayment')" class="btn btn-warning">
         <i class="fas fa-building"></i> Company Payment
+      </button>
+      <!-- Cargo Invoice Button -->
+      <button onclick="showCargoModal()" class="btn btn-danger">
+        <i class="fas fa-shipping-fast"></i> Cargo Invoice
       </button>
       <button onclick="showSection('search')" class="btn btn-secondary">
         <i class="fas fa-search"></i> Search
@@ -251,6 +260,77 @@
     <div id="notification" class="alert alert-success notification align-items-center" role="alert">
       <i class="fas fa-check-circle me-2"></i>
       <span id="notificationMessage">Success!</span>
+    </div>
+  </div>
+
+  <!-- Cargo Invoice Modal -->
+  <div class="modal fade" id="cargoModal" tabindex="-1" aria-labelledby="cargoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="cargoModalLabel"><i class="fas fa-shipping-fast"></i> Al-Harbi Cargo & Travel - Invoice</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-light">
+          <form id="cargoForm">
+            <div class="row">
+              <div class="col-md-6 mb-2">
+                <label>Date:</label>
+                <input type="text" id="cargoDate" readonly class="form-control">
+              </div>
+              <div class="col-md-6 mb-2">
+                <label>Bill No:</label>
+                <input type="text" id="billNumber" name="billNumber" readonly class="form-control">
+              </div>
+            </div>
+            <label>Customer Name:
+              <input type="text" name="customerName" required class="form-control">
+            </label>
+            <label>Mobile (Saudi):
+              <input type="text" name="mobileSaudia" required class="form-control">
+            </label>
+            <label>Mobile (Pakistan):
+              <input type="text" name="mobilePakistan" class="form-control">
+            </label>
+            <label>Received By:
+              <input type="text" name="receivedBy" class="form-control">
+            </label>
+            <label>Cargo Type:
+              <select name="cargoType" id="cargoType" required class="form-select" onchange="updateRate()">
+                <option value="">-- Select --</option>
+                <option value="Air">Air Cargo</option>
+                <option value="Sea">Sea Cargo</option>
+              </select>
+            </label>
+            <label>Item Description:
+              <textarea name="description" rows="2" required class="form-control" placeholder="Enter item details..."></textarea>
+            </label>
+            <div class="row">
+              <div class="col-md-4 mb-2">
+                <label>Pieces:</label>
+                <input type="number" name="pieces" required class="form-control">
+              </div>
+              <div class="col-md-4 mb-2">
+                <label>Weight (KG):</label>
+                <input type="number" name="weight" id="weight" required class="form-control" oninput="calculateAmount()">
+              </div>
+              <div class="col-md-4 mb-2">
+                <label>Rate (SAR):</label>
+                <input type="text" id="rate" readonly class="form-control">
+              </div>
+            </div>
+            <label>Total Amount (SAR): <span id="amount" class="fw-bold text-success">0</span></label>
+            <label>Invoice Created By:
+              <input type="text" name="createdBy" required class="form-control">
+            </label>
+            <label>Approved By:
+              <input type="text" name="approvedBy" required class="form-control">
+            </label>
+            <button type="submit" class="btn btn-danger mt-2 w-100">Submit</button>
+          </form>
+          <div id="whatsappResult" class="mt-2"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -502,6 +582,105 @@ Thank you for choosing us! Safe travels! ✈️`;
       document.getElementsByName("travelDate")[0].value = today;
       document.getElementsByName("travelDate")[0].min = today;
       document.querySelector('#companyPaymentForm input[name="date"]').value = today;
+    });
+
+    // Cargo Invoice Modal Logic
+    function showCargoModal() {
+      document.getElementById('cargoForm').reset();
+      document.getElementById('amount').textContent = "0";
+      document.getElementById('whatsappResult').innerHTML = "";
+      document.getElementById('cargoDate').value = new Date().toLocaleDateString();
+      fetch("https://script.google.com/macros/s/AKfycbzDeaw2Kx1OOwCSz6fD2_EU5KM8neXnZhdIZ0mB5Bee9u-KKnfbZN8UjbmBSknUTj01/exec")
+        .then(res => res.text())
+        .then(bill => {
+          document.getElementById('billNumber').value = bill;
+        })
+        .catch(err => {
+          alert("Error fetching Bill Number: " + err);
+          document.getElementById('billNumber').value = "AHB 01";
+        });
+      var cargoModal = new bootstrap.Modal(document.getElementById('cargoModal'));
+      cargoModal.show();
+    }
+    function updateRate() {
+      const type = document.getElementById('cargoType').value;
+      let rate = 0;
+      if (type === "Air") rate = 10;
+      if (type === "Sea") rate = 3.5;
+      document.getElementById('rate').value = rate;
+      calculateAmount();
+    }
+    function calculateAmount() {
+      const weight = parseFloat(document.getElementById('weight').value) || 0;
+      const rate = parseFloat(document.getElementById('rate').value) || 0;
+      const total = weight * rate;
+      document.getElementById('amount').textContent = total.toFixed(2);
+    }
+    function getDeliveryDate() {
+      const today = new Date();
+      today.setDate(today.getDate() + 60);
+      return today.toLocaleDateString('en-GB');
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById('cargoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = new FormData(form);
+
+        const customerName = form.customerName.value;
+        const mobileSaudia = form.mobileSaudia.value.replace(/\D/g, '');
+        const billNo = document.getElementById('billNumber').value;
+        const weight = form.weight.value;
+        const amount = document.getElementById('amount').textContent;
+        const cargoType = form.cargoType.value;
+        const receivedBy = form.receivedBy.value;
+        const deliveryDate = getDeliveryDate();
+
+        data.append('date', document.getElementById('cargoDate').value);
+        data.append('amount', amount);
+
+        fetch("https://script.google.com/macros/s/AKfycbzDeaw2Kx1OOwCSz6fD2_EU5KM8neXnZhdIZ0mB5Bee9u-KKnfbZN8UjbmBSknUTj01/exec", {
+          method: 'POST',
+          body: data
+        }).then(response => {
+          alert("Form Submitted Successfully!");
+          form.reset();
+          document.getElementById('amount').textContent = "0";
+
+          const msg = `
+السلام علیکم محترم ${customerName} صاحب!
+
+📅 بل نمبر: ${billNo}
+📈 وزن: ${weight} کلوگرام
+💲 کل رقم: ${amount} ریال
+✉ قسم: ${cargoType}
+👤 موصول کنندہ: ${receivedBy}
+
+📅 متوقع ڈیلیوری وقت: 50 سے 60 دن
+
+مزید معلومات کے لیے ہم سے رابطہ کریں۔
+جزاک اللہ خیراً!
+📦 Al-Harbi Cargo & Travel
+`;
+
+          const waURL = `https://wa.me/966${mobileSaudia}?text=${encodeURIComponent(msg)}`;
+
+          const waDiv = document.getElementById('whatsappResult');
+          waDiv.innerHTML = '';
+
+          const waBtn = document.createElement('a');
+          waBtn.href = waURL;
+          waBtn.target = '_blank';
+          waBtn.style = "display:inline-block;margin-top:15px;background:#25D366;color:#fff;padding:10px;border-radius:5px;text-decoration:none;";
+          waBtn.textContent = "📤 WhatsApp Message Send Karein";
+
+          waDiv.appendChild(waBtn);
+
+          setTimeout(() => location.reload(), 8000);
+        }).catch(error => {
+          alert("Error: " + error);
+        });
+      });
     });
   </script>
 </body>
