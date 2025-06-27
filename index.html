@@ -1,344 +1,562 @@
-<!-- Paste this code into your Blogger HTML page/post -->
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Travel Agency Portal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    html { scroll-behavior: smooth; }
-    .slideshow-container { position: relative; height: 220px; }
-    .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s; }
-    .slide.active { opacity: 1; z-index: 1; }
-    .slide img { object-fit: cover; width: 100%; height: 100%; border-radius: .5rem; }
-    .slide-content { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top,rgba(0,0,0,0.7),transparent); color: #fff; padding: 1rem; border-radius: 0 0 .5rem .5rem;}
-    .slideshow-dots { display: flex; justify-content: center; gap: 8px; margin-top: 1rem;}
-    .dot { width: 10px; height: 10px; border-radius: 50%; background: #dee2e6; cursor: pointer; }
-    .dot.active { background: #0d6efd;}
-    .notification { position: fixed; top: 1rem; right: 1rem; z-index: 9999; display: none;}
-    .notification.show { display: flex;}
-    #searchResult th, #searchResult td { white-space: nowrap; }
-    #stickyBar { display: none; }
-    /* Modal fix for Blogger */
-    .modal-backdrop { z-index: 1040 !important; }
-    .modal { z-index: 1050 !important; }
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --success-color: #4cc9f0;
+      --danger-color: #f72585;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--dark-color);
+      line-height: 1.6;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+    .card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      margin-bottom: 20px;
+      transition: var(--transition);
+    }
+    .card:hover { box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); }
+    h1, h2, h3, h4 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .form-group { margin-bottom: 20px; }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #495057;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ced4da;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      transition: var(--transition);
+      font-family: 'Poppins', sans-serif;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    input[readonly] {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+    }
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      text-align: center;
+      text-decoration: none;
+      transition: var(--transition);
+      font-family: 'Poppins', sans-serif;
+    }
+    .btn:hover { background-color: var(--secondary-color); transform: translateY(-2px);}
+    .btn-secondary { background-color: #6c757d;}
+    .btn-secondary:hover { background-color: #5a6268;}
+    .btn-success { background-color: #38b000;}
+    .btn-success:hover { background-color: #2d8d00;}
+    .btn-danger { background-color: var(--danger-color);}
+    .btn-danger:hover { background-color: #d1145a;}
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .hidden { display: none;}
+    #whatsappButtonContainer { text-align: center; margin-top: 30px;}
+    #whatsappLink {
+      background-color: #25D366;
+      color: white;
+      padding: 15px 30px;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition);
+    }
+    #whatsappLink:hover { background-color: #128C7E; transform: translateY(-2px);}
+    #whatsappLink i { font-size: 20px;}
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      border-radius: var(--border-radius);
+    }
+    .data-table th, .data-table td {
+      border: 1px solid #dee2e6;
+      padding: 12px 15px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .data-table th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+    }
+    .data-table tr:nth-child(even) { background-color: #f8f9fa;}
+    .data-table tr:hover { background-color: #e9ecef;}
+    .table-container { overflow-x: auto; margin-top: 20px;}
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: var(--success-color);
+      color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: var(--transition);
+    }
+    .notification.show { opacity: 1; transform: translateY(0);}
+    .notification.error { background-color: var(--danger-color);}
+    .logo { text-align: center; margin-bottom: 30px;}
+    .logo img { max-width: 150px; height: auto;}
+    .input-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    /* Enhanced Slideshow UX Design */
+    .dashboard-slideshow { margin: 30px 0; position: relative;}
+    .slideshow-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .slideshow-title { color: var(--primary-color); font-size: 1.25rem; font-weight: 600;}
+    .slideshow-nav-buttons { display: flex; gap: 10px;}
+    .slideshow-container {
+      position: relative;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      height: 200px;
+    }
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: scale(0.98);
+    }
+    .slide.active {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 1;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .slide-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      padding: 20px;
+      color: white;
+      transform: translateY(20px);
+      transition: transform 0.5s ease;
+    }
+    .slide.active .slide-content { transform: translateY(0);}
+    .slide-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 5px;}
+    .slide-description { font-size: 0.9rem; opacity: 0.9;}
+    .slideshow-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ddd;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .dot.active { background-color: var(--primary-color); transform: scale(1.2);}
+    .slideshow-nav-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.9);
+      color: var(--primary-color);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .slideshow-nav-btn:hover { background-color: var(--primary-color); color: white; transform: scale(1.1);}
+    .slideshow-nav-btn i { font-size: 1rem;}
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @media (max-width: 768px) {
+      .btn-group { flex-direction: column;}
+      .btn { width: 100%;}
+      .input-group { grid-template-columns: 1fr;}
+      .data-table th, .data-table td { white-space: normal; padding: 8px 10px;}
+      .slideshow-container { height: 300px;}
+      .slide-title { font-size: 1.2rem;}
+      .slide-description { font-size: 0.8rem;}
+      .slideshow-nav-btn { width: 35px; height: 35px;}
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Our Team Section Styles */
+    .our-team-section {
+      margin-top: 40px;
+      margin-bottom: 40px;
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+    }
+    .team-grid {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .team-member {
+      background: var(--light-color);
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 8px rgba(67,97,238,0.08);
+      padding: 20px 18px 15px 18px;
+      text-align: center;
+      width: 200px;
+      transition: var(--transition);
+    }
+    .team-member:hover {
+      box-shadow: 0 8px 24px rgba(67,97,238,0.18);
+      transform: translateY(-5px) scale(1.03);
+    }
+    .team-member img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-color);
+      margin-bottom: 15px;
+      background: #e9ecef;
+    }
+    .member-name {
+      font-weight: 600;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    .member-role {
+      color: #6c757d;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 700px) {
+      .team-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      .team-member {
+        width: 90%;
+      }
+    }
   </style>
 </head>
-<body class="bg-light">
-
-  <!-- Sticky Buttons Bar (only visible after login) -->
-  <div id="stickyBar" class="sticky-top bg-white py-2 shadow-sm" style="z-index:1040;">
-    <div class="container d-flex justify-content-end align-items-center gap-2">
-      <!-- Logo left of New Booking -->
-      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeg5DSBZudBQFokB67zjGkZe4JqLNk15SGbgm1jIf2kAOIkxScnvA7rcDBK2TxXglhlz7jN0h_CtE5a8Uq4IP-VDhihipmOtDSgIzLxxrdbas64WHVYxcQdu1dZhimSHQznNu5LbX4M4cA-xs7Ej9OWfRp9k5sP7rVp5QY8qN_AiXolZfltS3S8kyp-6bL/s1600/1000509451.jpg" alt="Logo" height="38" style="border-radius:6px;">
-      <button onclick="showSection('form')" class="btn btn-success">
-        <i class="fas fa-plus-circle"></i> New Booking
-      </button>
-      <button onclick="showSection('companyPayment')" class="btn btn-warning">
-        <i class="fas fa-building"></i> Company Payment
-      </button>
-      <!-- Cargo Invoice Button -->
-      <button onclick="showCargoModal()" class="btn btn-danger">
-        <i class="fas fa-shipping-fast"></i> Cargo Invoice
-      </button>
-      <button onclick="showSection('search')" class="btn btn-secondary">
-        <i class="fas fa-search"></i> Search
-      </button>
-      <!-- Our Team Button -->
-      <button onclick="scrollToTeam()" class="btn btn-info text-white">
-        <i class="fas fa-users"></i> Our Team
-      </button>
-    </div>
-  </div>
-
-  <div class="container py-4">
+<body>
+  <div class="container">
     <!-- Login Section -->
-    <div id="loginSection" class="card mx-auto" style="max-width: 600px;">
-      <div class="card-body text-center">
-        <i class="fas fa-plane-departure fa-3x text-primary mb-2"></i>
-        <h2 class="mb-3">Travel Agency Portal</h2>
-        <h5 class="mb-3 text-secondary">Branch Login</h5>
-        <form onsubmit="handleLogin(event)">
-          <div class="mb-3 text-start">
-            <label class="form-label"><i class="fas fa-user"></i> Username</label>
-            <input type="text" id="username" class="form-control" placeholder="Enter your username" required>
-          </div>
-          <div class="mb-3 text-start">
-            <label class="form-label"><i class="fas fa-lock"></i> Password</label>
-            <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">
-            <i class="fas fa-sign-in-alt"></i> Login
-          </button>
-        </form>
+    <div id="loginSection" class="card">
+      <div class="logo">
+        <i class="fas fa-plane-departure" style="font-size: 48px; color: var(--primary-color);"></i>
+        <h1>Travel Agency Portal</h1>
       </div>
+      <h2>Branch Login</h2>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="username"><i class="fas fa-user"></i> Username</label>
+          <input type="text" id="username" placeholder="Enter your username" required>
+        </div>
+        <div class="form-group">
+          <label for="password"><i class="fas fa-lock"></i> Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+      </form>
     </div>
-
     <!-- Branch Section -->
-    <div id="branchSection" class="d-none">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <i class="fas fa-plane-departure fa-2x text-primary"></i>
-          <span class="fs-4 fw-bold ms-2">Welcome, <span id="branchName"></span></span>
-        </div>
+    <div id="branchSection" class="card hidden">
+      <div class="logo">
+        <i class="fas fa-plane-departure" style="font-size: 48px; color: var(--primary-color);"></i>
+        <h1>Welcome, <span id="branchName"></span></h1>
       </div>
-      <!-- Slideshow -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="mb-0"><i class="fas fa-images"></i> Featured Travel Packages</h5>
-            <div>
-              <button class="btn btn-outline-primary btn-sm" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
-              <button class="btn btn-outline-primary btn-sm" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
-            </div>
+      <div class="btn-group">
+        <button onclick="showSection('form')" class="btn">
+          <i class="fas fa-plus-circle"></i> New Booking
+        </button>
+        <button onclick="showSection('companyPayment')" class="btn" style="background-color: #6a1b9a;">
+          <i class="fas fa-building"></i> Company Payment
+        </button>
+        <button onclick="showSection('search')" class="btn btn-secondary">
+          <i class="fas fa-search"></i> Search Records
+        </button>
+      </div>
+      <!-- Enhanced Slideshow on Dashboard -->
+      <div class="dashboard-slideshow">
+        <div class="slideshow-header">
+          <h3 class="slideshow-title"><i class="fas fa-images"></i> Featured Travel Packages</h3>
+          <div class="slideshow-nav-buttons">
+            <button class="slideshow-nav-btn" onclick="prevSlide()">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slideshow-nav-btn" onclick="nextSlide()">
+              <i class="fas fa-chevron-right"></i>
+            </button>
           </div>
-          <div class="slideshow-container"></div>
-          <div class="slideshow-dots"></div>
+        </div>
+        <div class="slideshow-container">
+          <!-- Slides will be added here by JavaScript -->
+        </div>
+        <div class="slideshow-dots">
+          <!-- Dots will be added here by JavaScript -->
         </div>
       </div>
     </div>
-
     <!-- Form Section -->
-    <div id="formSection" class="card d-none mb-4">
-      <div class="card-body">
-        <h4><i class="fas fa-ticket-alt"></i> New Booking Form</h4>
-        <form id="travelForm" onsubmit="handleSubmit(event)">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Customer Name</label>
-              <input type="text" name="customerName" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Mobile Number</label>
-              <input type="text" name="mobileNumber" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">PNR Number</label>
-              <input type="text" name="pnr" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Trip Type</label>
-              <select name="tripType" class="form-select" required>
-                <option value="">Select trip type</option>
-                <option value="One Way">One Way</option>
-                <option value="Return">Return</option>
-              </select>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Travel Date</label>
-              <input type="date" name="travelDate" class="form-control" required>
-            </div>
+    <div id="formSection" class="card hidden">
+      <h2><i class="fas fa-ticket-alt"></i> New Booking Form</h2>
+      <form id="travelForm" onsubmit="handleSubmit(event)">
+        <div class="input-group">
+          <div class="form-group">
+            <label>Customer Name</label>
+            <input type="text" name="customerName" placeholder="Full name" required>
           </div>
-          <h5 class="mt-3">Financial Details</h5>
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Cost Price (SAR)</label>
-              <input type="number" id="costPrice" name="costPrice" class="form-control" oninput="calculateProfit()" required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Cash Taken (SAR)</label>
-              <input type="number" id="cashTaken" name="cashTaken" class="form-control" oninput="calculateProfit();calculateBalance()" required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Profit (SAR)</label>
-              <input type="number" id="profit" name="profit" class="form-control" readonly>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Received Cash (SAR)</label>
-              <input type="number" id="receivedCash" name="receivedCash" class="form-control" oninput="calculateBalance()" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Balance (SAR)</label>
-              <input type="number" id="balance" name="balance" class="form-control" readonly>
-            </div>
-            <input type="hidden" name="branch">
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="text" name="mobileNumber" placeholder="e.g. 0512345678" required>
           </div>
-          <button type="submit" class="btn btn-success" id="submitBtn"><i class="fas fa-paper-plane"></i> Submit Booking</button>
-        </form>
-        <div id="whatsappButtonContainer" class="mt-3 d-none">
-          <a id="whatsappLink" target="_blank" class="btn btn-success"><i class="fab fa-whatsapp"></i> Send Booking Details via WhatsApp</a>
         </div>
+        <div class="input-group">
+          <div class="form-group">
+            <label>PNR Number</label>
+            <input type="text" name="pnr" placeholder="Booking reference" required>
+          </div>
+          <div class="form-group">
+            <label>Trip Type</label>
+            <select name="tripType" required>
+              <option value="">Select trip type</option>
+              <option value="One Way">One Way</option>
+              <option value="Return">Return</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Travel Date</label>
+          <input type="date" name="travelDate" required>
+        </div>
+        <h3>Financial Details</h3>
+        <div class="input-group">
+          <div class="form-group">
+            <label>Cost Price (SAR)</label>
+            <input type="number" id="costPrice" name="costPrice" placeholder="0.00" oninput="calculateProfit()" required>
+          </div>
+          <div class="form-group">
+            <label>Cash Taken (SAR)</label>
+            <input type="number" id="cashTaken" name="cashTaken" placeholder="0.00" oninput="calculateProfit(); calculateBalance()" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="form-group">
+            <label>Profit (SAR)</label>
+            <input type="number" id="profit" name="profit" readonly>
+          </div>
+          <div class="form-group">
+            <label>Received Cash (SAR)</label>
+            <input type="number" id="receivedCash" name="receivedCash" placeholder="0.00" oninput="calculateBalance()" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Balance (SAR)</label>
+          <input type="number" id="balance" name="balance" readonly>
+        </div>
+        <div class="form-group hidden">
+          <label>Branch</label>
+          <input type="text" name="branch" readonly>
+        </div>
+        <button type="submit" class="btn btn-success" id="submitBtn">
+          <i class="fas fa-paper-plane"></i> Submit Booking
+        </button>
+      </form>
+      <div id="whatsappButtonContainer" class="hidden">
+        <a id="whatsappLink" target="_blank">
+          <i class="fab fa-whatsapp"></i> Send Booking Details via WhatsApp
+        </a>
       </div>
     </div>
-
     <!-- Company Payment Section -->
-    <div id="companyPaymentSection" class="card d-none mb-4">
-      <div class="card-body">
-        <h4><i class="fas fa-building"></i> Company Payment</h4>
-        <form id="companyPaymentForm" onsubmit="handleCompanyPaymentSubmit(event)">
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Date</label>
-              <input type="date" name="date" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Invoice Number</label>
-              <input type="text" name="invoiceNumber" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Company Name</label>
-              <input type="text" name="companyName" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Payment Method</label>
-              <select name="paymentMethod" class="form-select" required>
-                <option value="">Select method</option>
-                <option value="Cash">Cash</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-                <option value="Cheque">Cheque</option>
-                <option value="Credit Card">Credit Card</option>
-              </select>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Total Sale (SAR)</label>
-              <input type="number" id="totalSale" name="totalSale" class="form-control" oninput="calculateCompanyBalance()" required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Cash Paid (SAR)</label>
-              <input type="number" id="cashPaid" name="cashPaid" class="form-control" oninput="calculateCompanyBalance()" required>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Balance (SAR)</label>
-              <input type="number" id="companyBalance" name="balance" class="form-control" readonly>
-            </div>
-            <input type="hidden" name="branch">
+    <div id="companyPaymentSection" class="card hidden">
+      <h2><i class="fas fa-building"></i> Company Payment</h2>
+      <form id="companyPaymentForm" onsubmit="handleCompanyPaymentSubmit(event)">
+        <div class="input-group">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" name="date" required>
           </div>
-          <button type="submit" class="btn btn-warning" id="companyPaymentBtn"><i class="fas fa-save"></i> Submit Payment</button>
-        </form>
-      </div>
+          <div class="form-group">
+            <label>Invoice Number</label>
+            <input type="text" name="invoiceNumber" placeholder="Invoice #" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" name="companyName" placeholder="Company name" required>
+          </div>
+          <div class="form-group">
+            <label>Payment Method</label>
+            <select name="paymentMethod" required>
+              <option value="">Select method</option>
+              <option value="Cash">Cash</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Cheque">Cheque</option>
+              <option value="Credit Card">Credit Card</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="form-group">
+            <label>Total Sale (SAR)</label>
+            <input type="number" id="totalSale" name="totalSale" placeholder="0.00" oninput="calculateCompanyBalance()" required>
+          </div>
+          <div class="form-group">
+            <label>Cash Paid (SAR)</label>
+            <input type="number" id="cashPaid" name="cashPaid" placeholder="0.00" oninput="calculateCompanyBalance()" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Balance (SAR)</label>
+          <input type="number" id="companyBalance" name="balance" readonly>
+        </div>
+        <div class="form-group hidden">
+          <label>Branch</label>
+          <input type="text" name="branch" readonly>
+        </div>
+        <button type="submit" class="btn" style="background-color: #6a1b9a;" id="companyPaymentBtn">
+          <i class="fas fa-save"></i> Submit Payment
+        </button>
+      </form>
     </div>
-
     <!-- Search Section -->
-    <div id="searchSection" class="card d-none mb-4">
-      <div class="card-body">
-        <h4><i class="fas fa-search"></i> Search Records</h4>
-        <form onsubmit="event.preventDefault(); searchRecord();">
-          <div class="input-group mb-3">
-            <input type="text" id="searchQuery" class="form-control" placeholder="Enter mobile number or PNR" required>
-            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
-          </div>
-        </form>
-        <div id="searchResult"></div>
-      </div>
-    </div>
-
-    <!-- Our Team Section -->
-    <div id="ourTeamSection" class="card mb-4">
-      <div class="card-body">
-        <h4 class="text-center mb-4"><i class="fas fa-users"></i> Our Team</h4>
-        <div class="row justify-content-center">
-          <div class="col-6 col-md-3 text-center mb-3">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgrxQS6QXhoh9CHDUuPgy35evmqeQqY8Ic_N1kXrV4Brugl1gzu09TKc9yOWUZqmqfLggYsFIIjPppg1JZ-9mLdFxXRuJHzUtnMYtRor2AH9QJfM6l3keU5-KEJIrDIqVKRLXLju4Qr2ywkg3HRNjo5e7krErnaRYaf8o5cQ9bO1HKq0dDxiA9W0cCzLIPk/s1600/0.jpg" class="rounded-circle border border-primary mb-2" width="80" height="80" alt="Muhammad Shahzad">
-            <div class="fw-bold text-primary">Muhammad Shahzad</div>
-            <div class="text-secondary">Branch Manager</div>
-          </div>
-          <div class="col-6 col-md-3 text-center mb-3">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjE8yWHYxdGzZL5DzD-RAJAxC3-e9t_TRZgMsaZqf7REeyzPie_M98afbfgOU_C58ZoXdzHUbFPO2G9xEHc2_Fzmdr0pYCoqNw9FNE6CMPMZ27nO_SO3fxRGV1VHzhBpnL2loDSQhNHDndgskDxXQDrkAu8DWQcx9UXAXbuqzwRFr2i1G4vcf18-glZ2Fja/s1600/0.jpg" class="rounded-circle border border-primary mb-2" width="80" height="80" alt="Muhammad Madni">
-            <div class="fw-bold text-primary">Muhammad Madni</div>
-            <div class="text-secondary">Travel Consultant</div>
-          </div>
-          <div class="col-6 col-md-3 text-center mb-3">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSPNi0lFejl2WRTyElDX8HglNhEriWiHq6yqKBeV6QjMl3t6wpwcRoU43de4juteWDuyeU3ON-WuGJDLbUJXTIhT6RbGRrRxKU_ts32b81aPJC0sWpKBF5rkuYUOpfRCdXVMTIWfCRvIexW-YNbUQZUpajO-iYps9N_JoSDIKFLuI-AJlYC3szQGOLvGOM/s1600/1000533845.jpg" class="rounded-circle border border-primary mb-2" width="80" height="80" alt="Rana Usman">
-            <div class="fw-bold text-primary">Rana Usman</div>
-            <div class="text-secondary">Ticketing Officer</div>
-          </div>
-          <div class="col-6 col-md-3 text-center mb-3">
-            <img src="https://randomuser.me/api/portraits/men/35.jpg" class="rounded-circle border border-primary mb-2" width="80" height="80" alt="Muhammad Tahir">
-            <div class="fw-bold text-primary">Muhammad Tahir</div>
-            <div class="text-secondary">Visa Specialist</div>
+    <div id="searchSection" class="card hidden">
+      <h2><i class="fas fa-search"></i> Search Records</h2>
+      <form onsubmit="event.preventDefault(); searchRecord();">
+        <div class="form-group">
+          <label>Search by Mobile Number or PNR</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="searchQuery" placeholder="Enter mobile number or PNR" required>
+            <button type="submit" class="btn">
+              <i class="fas fa-search"></i> Search
+            </button>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Notification -->
-    <div id="notification" class="alert alert-success notification align-items-center" role="alert">
-      <i class="fas fa-check-circle me-2"></i>
-      <span id="notificationMessage">Success!</span>
+      </form>
+      <div id="searchResult"></div>
     </div>
   </div>
-
-  <!-- Cargo Invoice Modal -->
-  <div class="modal fade" id="cargoModal" tabindex="-1" aria-labelledby="cargoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title" id="cargoModalLabel"><i class="fas fa-shipping-fast"></i> Al-Harbi Cargo & Travel - Invoice</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+  <!-- Our Team Section -->
+  <div class="container">
+    <div class="our-team-section card">
+      <h2 style="text-align:center; margin-bottom: 30px;"><i class="fas fa-users"></i> Our Team</h2>
+      <div class="team-grid">
+        <div class="team-member">
+          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgrxQS6QXhoh9CHDUuPgy35evmqeQqY8Ic_N1kXrV4Brugl1gzu09TKc9yOWUZqmqfLggYsFIIjPppg1JZ-9mLdFxXRuJHzUtnMYtRor2AH9QJfM6l3keU5-KEJIrDIqVKRLXLju4Qr2ywkg3HRNjo5e7krErnaRYaf8o5cQ9bO1HKq0dDxiA9W0cCzLIPk/s1600/0.jpg" alt="Muhammad Shahzad">
+          <div class="member-name">Muhammad Shahzad</div>
+          <div class="member-role">Branch Manager</div>
         </div>
-        <div class="modal-body bg-light">
-          <form id="cargoForm">
-            <div class="row">
-              <div class="col-md-6 mb-2">
-                <label>Date:</label>
-                <input type="text" id="cargoDate" readonly class="form-control">
-              </div>
-              <div class="col-md-6 mb-2">
-                <label>Bill No:</label>
-                <input type="text" id="billNumber" name="billNumber" readonly class="form-control">
-              </div>
-            </div>
-            <label>Customer Name:
-              <input type="text" name="customerName" required class="form-control">
-            </label>
-            <label>Mobile (Saudi):
-              <input type="text" name="mobileSaudia" required class="form-control">
-            </label>
-            <label>Mobile (Pakistan):
-              <input type="text" name="mobilePakistan" class="form-control">
-            </label>
-            <label>Received By:
-              <input type="text" name="receivedBy" class="form-control">
-            </label>
-            <label>Cargo Type:
-              <select name="cargoType" id="cargoType" required class="form-select" onchange="updateRate()">
-                <option value="">-- Select --</option>
-                <option value="Air">Air Cargo</option>
-                <option value="Sea">Sea Cargo</option>
-              </select>
-            </label>
-            <label>Item Description:
-              <textarea name="description" rows="2" required class="form-control" placeholder="Enter item details..."></textarea>
-            </label>
-            <div class="row">
-              <div class="col-md-4 mb-2">
-                <label>Pieces:</label>
-                <input type="number" name="pieces" required class="form-control">
-              </div>
-              <div class="col-md-4 mb-2">
-                <label>Weight (KG):</label>
-                <input type="number" name="weight" id="weight" required class="form-control" oninput="calculateAmount()">
-              </div>
-              <div class="col-md-4 mb-2">
-                <label>Rate (SAR):</label>
-                <input type="text" id="rate" readonly class="form-control">
-              </div>
-            </div>
-            <label>Total Amount (SAR): <span id="amount" class="fw-bold text-success">0</span></label>
-            <label>Invoice Created By:
-              <input type="text" name="createdBy" required class="form-control">
-            </label>
-            <label>Approved By:
-              <input type="text" name="approvedBy" required class="form-control">
-            </label>
-            <button type="submit" class="btn btn-danger mt-2 w-100">Submit</button>
-          </form>
-          <div id="whatsappResult" class="mt-2"></div>
+        <div class="team-member">
+          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjE8yWHYxdGzZL5DzD-RAJAxC3-e9t_TRZgMsaZqf7REeyzPie_M98afbfgOU_C58ZoXdzHUbFPO2G9xEHc2_Fzmdr0pYCoqNw9FNE6CMPMZ27nO_SO3fxRGV1VHzhBpnL2loDSQhNHDndgskDxXQDrkAu8DWQcx9UXAXbuqzwRFr2i1G4vcf18-glZ2Fja/s1600/0.jpg" alt="Muhammad Madni">
+          <div class="member-name">Muhammad Madni</div>
+          <div class="member-role">Travel Consultant</div>
+        </div>
+        <div class="team-member">
+          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSPNi0lFejl2WRTyElDX8HglNhEriWiHq6yqKBeV6QjMl3t6wpwcRoU43de4juteWDuyeU3ON-WuGJDLbUJXTIhT6RbGRrRxKU_ts32b81aPJC0sWpKBF5rkuYUOpfRCdXVMTIWfCRvIexW-YNbUQZUpajO-iYps9N_JoSDIKFLuI-AJlYC3szQGOLvGOM/s1600/1000533845.jpg" alt="Rana Usman">
+          <div class="member-name">Rana Usman</div>
+          <div class="member-role">Ticketing Officer</div>
+        </div>
+        <div class="team-member">
+          <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Muhammad Tahir">
+          <div class="member-name">Muhammad Tahir</div>
+          <div class="member-role">Visa Specialist</div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Notification -->
+  <div id="notification" class="notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notificationMessage">Success!</span>
+  </div>
   <script>
-    // URLs
+    // Original booking system URL
     const bookingScriptURL = "https://script.google.com/macros/s/AKfycbx1OULfRXdLoAux8EEVXQF9xXhM83dnG6sSwkxjbsYqXoqhZmBN_NFoV4F5hu87zzPP/exec";
+    // New company payment system URL you provided
     const paymentScriptURL = "https://script.google.com/macros/s/AKfycbyq-ZAoXOCAKz3JJAVJHDJzFUjmX0-r1x-i6UxEBn8o0zvLP2c1p_ugKsQuRp_XRGg/exec";
     const branchData = {
       "Muhammad Shahzad": { password: "1234", branchName: "Muhammad Shahzad" },
@@ -346,37 +564,63 @@
       "Rana Usman": { password: "91011", branchName: "Rana Usman" },
       "Muhammad Tahir": { password: "1213", branchName: "Muhammad Tahir" }
     };
+    // Enhanced slideshow data
     const slideshowData = [
-      { imageUrl: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg0sBJA4oEVoJSk4rEi7p9xsl1VkVzCGJdfIzfpftT49XhVLpqREr-KBCBVBWCBS9Sa5eG1QVoKHqORHb7ZdgvF7ixCVnYl-1Nyua_g9FghuzIBthV5t5HCwVVEOz3wzOoGjFIkPtlatPNeCoLYx3-n3Ut6i6VDZWxcQ5gs-zT9X4w1u5oiHj8iJHwnCiwR/s1600/mail.google%20%282%29.jpg", title: "Umra Visa", description: "85-Days", price: "Soon" },
-      { imageUrl: "https://images.unsplash.com/photo-1503917988258-f87a78e3c995?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80", title: "Magical Istanbul", description: "7-day cultural tour including Hagia Sophia and Bosphorus cruise", price: "3,500" },
-      { imageUrl: "https://images.unsplash.com/photo-1527631746610-bca00a040d60?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80", title: "Maldives Paradise", description: "Romantic overwater bungalow getaway with snorkeling and spa", price: "5,000" },
-      { imageUrl: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80", title: "London Explorer", description: "6-day city tour with visits to Buckingham Palace and West End show", price: "4,000" }
+      {
+        imageUrl: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg0sBJA4oEVoJSk4rEi7p9xsl1VkVzCGJdfIzfpftT49XhVLpqREr-KBCBVBWCBS9Sa5eG1QVoKHqORHb7ZdgvF7ixCVnYl-1Nyua_g9FghuzIBthV5t5HCwVVEOz3wzOoGjFIkPtlatPNeCoLYx3-n3Ut6i6VDZWxcQ5gs-zT9X4w1u5oiHj8iJHwnCiwR/s1600/mail.google%20%282%29.jpg",
+        title: "Umra Visa",
+        description: "85-Days ",
+        price: "Soon"
+      },
+      {
+        imageUrl: "https://images.unsplash.com/photo-1503917988258-f87a78e3c995?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+        title: "Magical Istanbul",
+        description: "7-day cultural tour including Hagia Sophia and Bosphorus cruise",
+        price: "3,500"
+      },
+      {
+        imageUrl: "https://images.unsplash.com/photo-1527631746610-bca00a040d60?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+        title: "Maldives Paradise",
+        description: "Romantic overwater bungalow getaway with snorkeling and spa",
+        price: "5,000"
+      },
+      {
+        imageUrl: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+        title: "London Explorer",
+        description: "6-day city tour with visits to Buckingham Palace and West End show",
+        price: "4,000"
+      }
     ];
     let currentBranch = "";
     let isLoading = false;
     let currentSlide = 0;
     let slideInterval;
 
+    // ---- Fixed Login Function ----
     function handleLogin(event) {
       event.preventDefault();
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
+
       if (branchData[username] && branchData[username].password === password) {
         currentBranch = branchData[username].branchName;
         document.getElementById("branchName").innerText = currentBranch;
         document.querySelector('input[name="branch"]').value = currentBranch;
         document.querySelector('#companyPaymentForm input[name="branch"]').value = currentBranch;
-        document.getElementById("loginSection").classList.add("d-none");
-        document.getElementById("branchSection").classList.remove("d-none");
-        document.getElementById("formSection").classList.remove("d-none");
-        // Show sticky bar
-        document.getElementById("stickyBar").style.display = "block";
+
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("branchSection").classList.remove("hidden");
+        document.getElementById("formSection").classList.remove("hidden");
+
+        // Initialize enhanced slideshow
         initSlideshow();
+
         showNotification("Login successful! Welcome " + currentBranch);
       } else {
         showNotification("Incorrect username or password", true);
       }
     }
+    // ---- Rest of JS code remains the same ----
     function calculateProfit() {
       const costPrice = parseFloat(document.getElementById("costPrice").value) || 0;
       const cashTaken = parseFloat(document.getElementById("cashTaken").value) || 0;
@@ -401,7 +645,7 @@
       formData.set("branch", currentBranch);
       const mobileNumberRaw = formData.get("mobileNumber").replace(/\D/g, '');
       const customerName = formData.get("customerName");
-      const message = `✨ *Your Booking Has Been Confirmed* ✨
+      const message = `✨ *New Booking Confirmation* ✨
 
 ❤️ *Customer Name:* ${customerName}
 📱 *Mobile Number:* ${mobileNumberRaw}
@@ -422,11 +666,15 @@ Thank you for choosing us! Safe travels! ✈️`;
       const countryCode = mobileNumberRaw.startsWith("05") ? "966" : "92";
       const fullMobile = `${countryCode}${mobileNumberRaw.substring(mobileNumberRaw.startsWith("0") ? 1 : 0)}`;
       document.getElementById("whatsappLink").href = `https://wa.me/${fullMobile}?text=${encodeURIComponent(message)}`;
-      document.getElementById("whatsappButtonContainer").classList.remove("d-none");
+      document.getElementById("whatsappButtonContainer").classList.remove("hidden");
+      // Show loading state
       isLoading = true;
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+      submitBtn.innerHTML = '<span class="spinner"></span> Processing...';
       submitBtn.disabled = true;
-      fetch(bookingScriptURL, { method: "POST", body: formData })
+      fetch(bookingScriptURL, {
+        method: "POST",
+        body: formData
+      })
         .then(res => res.text())
         .then(data => {
           showNotification("Booking submitted successfully!");
@@ -450,14 +698,19 @@ Thank you for choosing us! Safe travels! ✈️`;
       const formData = new FormData(form);
       const submitBtn = document.getElementById("companyPaymentBtn");
       formData.set("branch", currentBranch);
+      // Show loading state
       isLoading = true;
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+      submitBtn.innerHTML = '<span class="spinner"></span> Processing...';
       submitBtn.disabled = true;
-      fetch(paymentScriptURL, { method: "POST", body: formData })
+      fetch(paymentScriptURL, {
+        method: "POST",
+        body: formData
+      })
         .then(res => res.text())
         .then(data => {
           showNotification("Company payment submitted successfully!");
           form.reset();
+          // Set default date to today
           const today = new Date().toISOString().split('T')[0];
           document.querySelector('#companyPaymentForm input[name="date"]').value = today;
         })
@@ -475,13 +728,15 @@ Thank you for choosing us! Safe travels! ✈️`;
       const notification = document.getElementById("notification");
       const notificationMessage = document.getElementById("notificationMessage");
       notificationMessage.textContent = message;
-      notification.className = isError ? "alert alert-danger notification show align-items-center" : "alert alert-success notification show align-items-center";
-      setTimeout(() => { notification.classList.remove("show"); }, 4000);
+      notification.className = isError ? "notification error show" : "notification show";
+      setTimeout(() => {
+        notification.classList.remove("show");
+      }, 5000);
     }
     function showSection(section) {
-      document.getElementById("formSection").classList.toggle("d-none", section !== "form");
-      document.getElementById("companyPaymentSection").classList.toggle("d-none", section !== "companyPayment");
-      document.getElementById("searchSection").classList.toggle("d-none", section !== "search");
+      document.getElementById("formSection").classList.toggle("hidden", section !== "form");
+      document.getElementById("companyPaymentSection").classList.toggle("hidden", section !== "companyPayment");
+      document.getElementById("searchSection").classList.toggle("hidden", section !== "search");
       if (section === "search") {
         document.getElementById("searchQuery").focus();
         clearInterval(slideInterval);
@@ -489,9 +744,11 @@ Thank you for choosing us! Safe travels! ✈️`;
         clearInterval(slideInterval);
       } else if (section === "companyPayment") {
         clearInterval(slideInterval);
+        // Set default date to today
         const today = new Date().toISOString().split('T')[0];
         document.querySelector('#companyPaymentForm input[name="date"]').value = today;
       } else {
+        // When returning to dashboard
         startSlideInterval();
       }
     }
@@ -507,8 +764,31 @@ Thank you for choosing us! Safe travels! ✈️`;
             searchResult.innerHTML = "<p>No records found matching your search.</p>";
             return;
           }
+          // Get all unique keys from the first record
           const headers = Object.keys(data[0]);
-          let html = `<div class="table-responsive"><table class="table table-bordered table-striped"><thead><tr>${headers.map(header => `<th>${header.replace(/([A-Z])/g, ' $1').replace(/\s+/g, ' ').trim()}</th>`).join('')}</tr></thead><tbody>${data.map(record => `<tr>${headers.map(header => `<td>${record[header] || '-'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+          // Create table HTML
+          let html = `
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    ${headers.map(header =>
+                      `<th>${header.replace(/([A-Z])/g, ' $1').replace(/\s+/g, ' ').trim()}</th>`
+                    ).join('')}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${data.map(record => `
+                    <tr>
+                      ${headers.map(header =>
+                        `<td>${record[header] || '-'}</td>`
+                      ).join('')}
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
           searchResult.innerHTML = html;
         })
         .catch(err => {
@@ -517,17 +797,27 @@ Thank you for choosing us! Safe travels! ✈️`;
           searchResult.innerHTML = "<p>Error loading search results. Please try again.</p>";
         });
     }
-    // Slideshow functions
+    // Enhanced slideshow functions
     function initSlideshow() {
       const slideshowContainer = document.querySelector('.slideshow-container');
       const dotsContainer = document.querySelector('.slideshow-dots');
+      // Clear existing content
       slideshowContainer.innerHTML = '';
       dotsContainer.innerHTML = '';
+      // Create slides
       slideshowData.forEach((slide, index) => {
         const slideElement = document.createElement('div');
         slideElement.className = `slide ${index === 0 ? 'active' : ''}`;
-        slideElement.innerHTML = `<img src="${slide.imageUrl}" alt="${slide.title}"><div class="slide-content"><div class="fs-5 fw-bold">${slide.title}</div><div>${slide.description}</div><div class="fw-bold mt-2">SAR ${slide.price}</div></div>`;
+        slideElement.innerHTML = `
+          <img src="${slide.imageUrl}" alt="${slide.title}">
+          <div class="slide-content">
+            <div class="slide-title">${slide.title}</div>
+            <div class="slide-description">${slide.description}</div>
+            <div class="slide-price" style="margin-top: 10px; font-weight: 600;">SAR ${slide.price}</div>
+          </div>
+        `;
         slideshowContainer.appendChild(slideElement);
+        // Create dots
         const dot = document.createElement('div');
         dot.className = `dot ${index === 0 ? 'active' : ''}`;
         dot.onclick = () => goToSlide(index);
@@ -548,6 +838,7 @@ Thank you for choosing us! Safe travels! ✈️`;
       currentSlide = (currentSlide + 1) % slides.length;
       slides[currentSlide].classList.add('active');
       dots[currentSlide].classList.add('active');
+      // Restart interval when manually navigating
       startSlideInterval();
     }
     function prevSlide() {
@@ -558,6 +849,7 @@ Thank you for choosing us! Safe travels! ✈️`;
       currentSlide = (currentSlide - 1 + slides.length) % slides.length;
       slides[currentSlide].classList.add('active');
       dots[currentSlide].classList.add('active');
+      // Restart interval when manually navigating
       startSlideInterval();
     }
     function goToSlide(index) {
@@ -568,119 +860,15 @@ Thank you for choosing us! Safe travels! ✈️`;
       currentSlide = index;
       slides[currentSlide].classList.add('active');
       dots[currentSlide].classList.add('active');
+      // Restart interval when manually navigating
       startSlideInterval();
     }
-    // Scroll to Our Team Section
-    function scrollToTeam() {
-      const teamSection = document.getElementById('ourTeamSection');
-      if(teamSection) {
-        teamSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
+    // Set default date to today
     document.addEventListener("DOMContentLoaded", function() {
       const today = new Date().toISOString().split('T')[0];
       document.getElementsByName("travelDate")[0].value = today;
       document.getElementsByName("travelDate")[0].min = today;
       document.querySelector('#companyPaymentForm input[name="date"]').value = today;
-    });
-
-    // Cargo Invoice Modal Logic
-    function showCargoModal() {
-      document.getElementById('cargoForm').reset();
-      document.getElementById('amount').textContent = "0";
-      document.getElementById('whatsappResult').innerHTML = "";
-      document.getElementById('cargoDate').value = new Date().toLocaleDateString();
-      fetch("https://script.google.com/macros/s/AKfycbzDeaw2Kx1OOwCSz6fD2_EU5KM8neXnZhdIZ0mB5Bee9u-KKnfbZN8UjbmBSknUTj01/exec")
-        .then(res => res.text())
-        .then(bill => {
-          document.getElementById('billNumber').value = bill;
-        })
-        .catch(err => {
-          alert("Error fetching Bill Number: " + err);
-          document.getElementById('billNumber').value = "AHB 01";
-        });
-      var cargoModal = new bootstrap.Modal(document.getElementById('cargoModal'));
-      cargoModal.show();
-    }
-    function updateRate() {
-      const type = document.getElementById('cargoType').value;
-      let rate = 0;
-      if (type === "Air") rate = 10;
-      if (type === "Sea") rate = 3.5;
-      document.getElementById('rate').value = rate;
-      calculateAmount();
-    }
-    function calculateAmount() {
-      const weight = parseFloat(document.getElementById('weight').value) || 0;
-      const rate = parseFloat(document.getElementById('rate').value) || 0;
-      const total = weight * rate;
-      document.getElementById('amount').textContent = total.toFixed(2);
-    }
-    function getDeliveryDate() {
-      const today = new Date();
-      today.setDate(today.getDate() + 60);
-      return today.toLocaleDateString('en-GB');
-    }
-    document.addEventListener("DOMContentLoaded", function() {
-      document.getElementById('cargoForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const form = e.target;
-        const data = new FormData(form);
-
-        const customerName = form.customerName.value;
-        const mobileSaudia = form.mobileSaudia.value.replace(/\D/g, '');
-        const billNo = document.getElementById('billNumber').value;
-        const weight = form.weight.value;
-        const amount = document.getElementById('amount').textContent;
-        const cargoType = form.cargoType.value;
-        const receivedBy = form.receivedBy.value;
-        const deliveryDate = getDeliveryDate();
-
-        data.append('date', document.getElementById('cargoDate').value);
-        data.append('amount', amount);
-
-        fetch("https://script.google.com/macros/s/AKfycbzDeaw2Kx1OOwCSz6fD2_EU5KM8neXnZhdIZ0mB5Bee9u-KKnfbZN8UjbmBSknUTj01/exec", {
-          method: 'POST',
-          body: data
-        }).then(response => {
-          alert("Form Submitted Successfully!");
-          form.reset();
-          document.getElementById('amount').textContent = "0";
-
-          const msg = `
-السلام علیکم محترم ${customerName} صاحب!
-
-📅 بل نمبر: ${billNo}
-📈 وزن: ${weight} کلوگرام
-💲 کل رقم: ${amount} ریال
-✉ قسم: ${cargoType}
-👤 موصول کنندہ: ${receivedBy}
-
-📅 متوقع ڈیلیوری وقت: 50 سے 60 دن
-
-مزید معلومات کے لیے ہم سے رابطہ کریں۔
-جزاک اللہ خیراً!
-📦 Al-Harbi Cargo & Travel
-`;
-
-          const waURL = `https://wa.me/966${mobileSaudia}?text=${encodeURIComponent(msg)}`;
-
-          const waDiv = document.getElementById('whatsappResult');
-          waDiv.innerHTML = '';
-
-          const waBtn = document.createElement('a');
-          waBtn.href = waURL;
-          waBtn.target = '_blank';
-          waBtn.style = "display:inline-block;margin-top:15px;background:#25D366;color:#fff;padding:10px;border-radius:5px;text-decoration:none;";
-          waBtn.textContent = "📤 WhatsApp Message Send Karein";
-
-          waDiv.appendChild(waBtn);
-
-          setTimeout(() => location.reload(), 8000);
-        }).catch(error => {
-          alert("Error: " + error);
-        });
-      });
     });
   </script>
 </body>
