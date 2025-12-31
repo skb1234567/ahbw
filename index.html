@@ -1,923 +1,1056 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <base target="_top">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Travel Agency WebApp</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
   <style>
     :root {
-      --primary-color: #4361ee;
-      --secondary-color: #3f37c9;
-      --success-color: #4cc9f0;
-      --danger-color: #f72585;
-      --light-color: #f8f9fa;
-      --dark-color: #212529;
-      --border-radius: 8px;
-      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --transition: all 0.3s ease;
+      --primary: #1e40af;
+      --primary-dark: #1d3696;
+      --secondary: #0d9488;
+      --accent: #fdba74;
+      --light-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --shadow: 0 4px 20px rgba(0,0,0,0.05);
+      --border-radius: 16px;
     }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
+
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f5f7fa;
-      color: var(--dark-color);
-      line-height: 1.6;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #1e293b;
+      overflow-x: hidden;
+      position: relative;
     }
-    
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    .card {
+
+    /* Side Menu - Hidden by default */
+    .side-menu {
+      position: fixed;
+      top: 120px;
+      left: 0;
+      z-index: 1050;
+      width: 50px;
       background: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      padding: 30px;
-      margin-bottom: 20px;
-      transition: var(--transition);
-    }
-    
-    .card:hover {
-      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    h1, h2, h3, h4 {
-      color: var(--primary-color);
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #495057;
-    }
-    
-    input, select {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid #ced4da;
-      border-radius: var(--border-radius);
-      font-size: 16px;
-      transition: var(--transition);
-      font-family: 'Poppins', sans-serif;
-    }
-    
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-    }
-    
-    input[readonly] {
-      background-color: #e9ecef;
-      cursor: not-allowed;
-    }
-    
-    .btn {
-      display: inline-block;
-      background-color: var(--primary-color);
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 500;
-      text-align: center;
-      text-decoration: none;
-      transition: var(--transition);
-      font-family: 'Poppins', sans-serif;
-    }
-    
-    .btn:hover {
-      background-color: var(--secondary-color);
-      transform: translateY(-2px);
-    }
-    
-    .btn-secondary {
-      background-color: #6c757d;
-    }
-    
-    .btn-secondary:hover {
-      background-color: #5a6268;
-    }
-    
-    .btn-success {
-      background-color: #38b000;
-    }
-    
-    .btn-success:hover {
-      background-color: #2d8d00;
-    }
-    
-    .btn-danger {
-      background-color: var(--danger-color);
-    }
-    
-    .btn-danger:hover {
-      background-color: #d1145a;
-    }
-    
-    .btn-group {
+      border-right: 1px solid #e2e8f0;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+      padding: 10px 0;
       display: flex;
-      gap: 10px;
-      margin: 20px 0;
-      flex-wrap: wrap;
-    }
-    
-    .hidden {
-      display: none;
-    }
-    
-    #whatsappButtonContainer {
-      text-align: center;
-      margin-top: 30px;
-    }
-    
-    #whatsappLink {
-      background-color: #25D366;
-      color: white;
-      padding: 15px 30px;
-      border-radius: var(--border-radius);
-      text-decoration: none;
-      font-weight: 600;
-      display: inline-flex;
+      flex-direction: column;
       align-items: center;
       gap: 10px;
-      transition: var(--transition);
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
     }
-    
-    #whatsappLink:hover {
-      background-color: #128C7E;
-      transform: translateY(-2px);
+    .side-menu.show {
+      opacity: 1;
+      pointer-events: all;
     }
-    
-    #whatsappLink i {
-      font-size: 20px;
+    .side-menu:hover {
+      width: 200px;
     }
-    
-    .data-table {
+    .side-menu-item {
       width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      box-shadow: var(--box-shadow);
-      overflow: hidden;
-      border-radius: var(--border-radius);
-    }
-    
-    .data-table th, 
-    .data-table td {
-      border: 1px solid #dee2e6;
       padding: 12px 15px;
-      text-align: left;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    .side-menu-item:hover {
+      background: var(--primary);
+      color: white;
+    }
+    .side-menu-item i {
+      font-size: 1.2rem;
+    }
+    .side-menu-item span {
+      display: none;
       white-space: nowrap;
     }
-    
-    .data-table th {
-      background-color: var(--primary-color);
-      color: white;
-      font-weight: 500;
+    .side-menu:hover .side-menu-item span {
+      display: inline;
     }
-    
-    .data-table tr:nth-child(even) {
-      background-color: #f8f9fa;
-    }
-    
-    .data-table tr:hover {
-      background-color: #e9ecef;
-    }
-    
-    .table-container {
-      overflow-x: auto;
-      margin-top: 20px;
-    }
-    
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 25px;
-      background-color: var(--success-color);
-      color: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0;
-      transform: translateY(-20px);
-      transition: var(--transition);
-    }
-    
-    .notification.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    .notification.error {
-      background-color: var(--danger-color);
-    }
-    
-    .logo {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    
-    .logo img {
-      max-width: 150px;
-      height: auto;
-    }
-    
-    .input-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-    }
-    
-    .spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-    }
-    
-    /* Enhanced Slideshow UX Design */
-    .dashboard-slideshow {
-      margin: 30px 0;
+
+    /* Slideshow */
+    .hero-slideshow {
       position: relative;
-    }
-
-    .slideshow-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .slideshow-title {
-      color: var(--primary-color);
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    .slideshow-nav-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .slideshow-container {
-      position: relative;
+      height: 350px;
       border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadw: var(--box-shadow);
-      height: 200px;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
     }
-
     .slide {
       position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       opacity: 0;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      transform: scale(0.98);
+      transition: opacity 0.5s ease;
+      background-size: cover;
+      background-position: center;
     }
-
     .slide.active {
       opacity: 1;
-      transform: scale(1);
-      z-index: 1;
     }
-
-    .slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-
     .slide-content {
       position: absolute;
       bottom: 0;
       left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-      padding: 20px;
+      width: 100%;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
       color: white;
-      transform: translateY(20px);
-      transition: transform 0.5s ease;
+      padding: 2rem;
     }
-
-    .slide.active .slide-content {
-      transform: translateY(0);
-    }
-
     .slide-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 5px;
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0;
     }
-
-    .slide-description {
-      font-size: 0.9rem;
+    .slide-subtitle {
+      font-size: 1.2rem;
       opacity: 0.9;
     }
 
-    .slideshow-dots {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 15px;
+    /* Header */
+    .app-header {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1rem 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
     }
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #ddd;
-      cursor: pointer;
-      transition: all 0.3s ease;
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary);
     }
 
-    .dot.active {
-      background-color: var(--primary-color);
-      transform: scale(1.2);
+    .card {
+      border: 0;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      background: var(--card-bg);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .slideshow-nav-btn {
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .btn {
+      border-radius: 12px;
+      font-weight: 600;
+      padding: 0.6rem 1.25rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+
+    .btn-success {
+      background-color: var(--secondary);
+      border-color: var(--secondary);
+    }
+
+    .badge {
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .nav-pills .nav-link {
+      border-radius: 12px;
+      padding: 0.6rem 1.25rem;
+      font-weight: 600;
+      color: #475569;
+      transition: all 0.25s ease;
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .nav-pills .nav-link:hover:not(.active) {
+      background-color: #f1f5f9;
+    }
+
+    .small-muted {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .table thead th {
+      white-space: nowrap;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    /* Dashboard stat cards */
+    .stat-card {
+      text-align: center;
+      padding: 1.25rem;
+    }
+    .stat-card .title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+    }
+    .stat-card .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .section-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-subtitle {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-control, .form-select {
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      padding: 0.6rem 1rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+    }
+
+    @media (max-width: 768px) {
+      .hero-slideshow { height: 250px; }
+      .slide-title { font-size: 1.5rem; }
+      .slide-subtitle { font-size: 1rem; }
+      .side-menu {
+        top: 80px;
+        width: 40px;
+      }
+      .side-menu:hover {
+        width: 160px;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header-icon {
       width: 40px;
       height: 40px;
-      border-radius: 50%;
-      background-color: rgba(255,255,255,0.9);
-      color: var(--primary-color);
-      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    .slideshow-nav-btn:hover {
-      background-color: var(--primary-color);
       color: white;
-      transform: scale(1.1);
-    }
-
-    .slideshow-nav-btn i {
-      font-size: 1rem;
-    }
-
-    /* Animation for slide change */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .btn-group {
-        flex-direction: column;
-      }
-      
-      .btn {
-        width: 100%;
-      }
-      
-      .input-group {
-        grid-template-columns: 1fr;
-      }
-      
-      .data-table th,
-      .data-table td {
-        white-space: normal;
-        padding: 8px 10px;
-      }
-      
-      .slideshow-container {
-        height: 300px;
-      }
-      
-      .slide-title {
-        font-size: 1.2rem;
-      }
-      
-      .slide-description {
-        font-size: 0.8rem;
-      }
-      
-      .slideshow-nav-btn {
-        width: 35px;
-        height: 35px;
-      }
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      font-weight: bold;
+      margin-right: 12px;
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <div class="container">
-    <!-- Login Section -->
-    <div id="loginSection" class="card">
-      <div class="logo">
-        <i class="fas fa-plane-departure" style="font-size: 48px; color: var(--primary-color);"></i>
-        <h1>Travel Agency Portal</h1>
-      </div>
-      <h2>Branch Login</h2>
-      <form onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label for="username"><i class="fas fa-user"></i> Username</label>
-          <input type="text" id="username" placeholder="Enter your username" required>
-        </div>
-        <div class="form-group">
-          <label for="password"><i class="fas fa-lock"></i> Password</label>
-          <input type="password" id="password" placeholder="Enter your password" required>
-        </div>
-        <button type="submit" class="btn">
-          <i class="fas fa-sign-in-alt"></i> Login
-        </button>
-      </form>
+  <!-- Side Menu - Initially Hidden -->
+  <div class="side-menu" id="sideMenu">
+    <div class="side-menu-item" onclick="switchTab('dash')">
+      <i>📊</i><span>Dashboard</span>
     </div>
-    
-    <!-- Branch Section -->
-    <div id="branchSection" class="card hidden">
-      <div class="logo">
-        <i class="fas fa-plane-departure" style="font-size: 48px; color: var(--primary-color);"></i>
-        <h1>Welcome, <span id="branchName"></span></h1>
-      </div>
-      <div class="btn-group">
-        <button onclick="showSection('form')" class="btn">
-          <i class="fas fa-plus-circle"></i> New Booking
-        </button>
-        <button onclick="showSection('search')" class="btn btn-secondary">
-          <i class="fas fa-search"></i> Search Records
-        </button>
-      </div>
-      
-      <!-- Enhanced Slideshow on Dashboard -->
-      <div class="dashboard-slideshow">
-        <div class="slideshow-header">
-          <h3 class="slideshow-title"><i class="fas fa-images"></i> Featured Travel Packages</h3>
-          <div class="slideshow-nav-buttons">
-            <button class="slideshow-nav-btn" onclick="prevSlide()">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="slideshow-nav-btn" onclick="nextSlide()">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-          </div>
-        </div>
-        
-        <div class="slideshow-container">
-          <!-- Slides will be added here by JavaScript -->
-        </div>
-        
-        <div class="slideshow-dots">
-          <!-- Dots will be added here by JavaScript -->
-        </div>
-      </div>
+    <div class="side-menu-item" onclick="switchTab('add')">
+      <i>➕</i><span>Add Booking</span>
     </div>
-    
-    <!-- Form Section -->
-    <div id="formSection" class="card hidden">
-      <h2><i class="fas fa-ticket-alt"></i> New Booking Form</h2>
-      <form id="travelForm" onsubmit="handleSubmit(event)">
-        <div class="input-group">
-          <div class="form-group">
-            <label>Customer Name</label>
-            <input type="text" name="customerName" placeholder="Full name" required>
-          </div>
-          <div class="form-group">
-            <label>Mobile Number</label>
-            <input type="text" name="mobileNumber" placeholder="e.g. 0512345678" required>
-          </div>
-        </div>
-        
-        <div class="input-group">
-          <div class="form-group">
-            <label>PNR Number</label>
-            <input type="text" name="pnr" placeholder="Booking reference" required>
-          </div>
-          <div class="form-group">
-            <label>Trip Type</label>
-            <select name="tripType" required>
-              <option value="">Select trip type</option>
-              <option value="One Way">One Way</option>
-              <option value="Return">Return</option>
-            </select>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Travel Date</label>
-          <input type="date" name="travelDate" required>
-        </div>
-        
-        <h3>Financial Details</h3>
-        <div class="input-group">
-          <div class="form-group">
-            <label>Cost Price (SAR)</label>
-            <input type="number" id="costPrice" name="costPrice" placeholder="0.00" oninput="calculateProfit()" required>
-          </div>
-          <div class="form-group">
-            <label>Cash Taken (SAR)</label>
-            <input type="number" id="cashTaken" name="cashTaken" placeholder="0.00" oninput="calculateProfit(); calculateBalance()" required>
-          </div>
-        </div>
-        
-        <div class="input-group">
-          <div class="form-group">
-            <label>Profit (SAR)</label>
-            <input type="number" id="profit" name="profit" readonly>
-          </div>
-          <div class="form-group">
-            <label>Received Cash (SAR)</label>
-            <input type="number" id="receivedCash" name="receivedCash" placeholder="0.00" oninput="calculateBalance()" required>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Balance (SAR)</label>
-          <input type="number" id="balance" name="balance" readonly>
-        </div>
-        
-        <div class="form-group hidden">
-          <label>Branch</label>
-          <input type="text" name="branch" readonly>
-        </div>
-        
-        <button type="submit" class="btn btn-success" id="submitBtn">
-          <i class="fas fa-paper-plane"></i> Submit Booking
-        </button>
-      </form>
-      
-      <div id="whatsappButtonContainer" class="hidden">
-        <a id="whatsappLink" target="_blank">
-          <i class="fab fa-whatsapp"></i> Send Booking Details via WhatsApp
-        </a>
-      </div>
+    <div class="side-menu-item" onclick="switchTab('search')">
+      <i>🔍</i><span>Search Records</span>
     </div>
-    
-    <!-- Search Section -->
-    <div id="searchSection" class="card hidden">
-      <h2><i class="fas fa-search"></i> Search Records</h2>
-      <form onsubmit="event.preventDefault(); searchRecord();">
-        <div class="form-group">
-          <label>Search by Mobile Number or PNR</label>
-          <div style="display: flex; gap: 10px;">
-            <input type="text" id="searchQuery" placeholder="Enter mobile number or PNR" required>
-            <button type="submit" class="btn">
-              <i class="fas fa-search"></i> Search
-            </button>
-          </div>
-        </div>
-      </form>
-      <div id="searchResult"></div>
+    <div class="side-menu-item" onclick="switchTab('recycle')">
+      <i>🗑️</i><span>Recycle Bin</span>
+    </div>
+    <div class="side-menu-item text-danger" id="sideLogout">
+      <i>🚪</i><span>Logout</span>
     </div>
   </div>
-  
-  <!-- Notification -->
-  <div id="notification" class="notification">
-    <i class="fas fa-check-circle"></i>
-    <span id="notificationMessage">Success!</span>
-  </div>
-  
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbx1OULfRXdLoAux8EEVXQF9xXhM83dnG6sSwkxjbsYqXoqhZmBN_NFoV4F5hu87zzPP/exec";
-    
-    const branchData = {
-      "Muhammad Shahzad": { password: "1234", branchName: "Muhammad Shahzad" },
-      "Muhammad Madni": { password: "5678", branchName: "Muhammad Madni" },
-      "Rana Usman": { password: "91011", branchName: "Rana Usman" },
-      "Muhammad Tahir": { password: "1213", branchName: "Muhammad Tahir" }
-    };
-    
-    // Enhanced slideshow data
-    const slideshowData = [
-      {
-        imageUrl: "https://aviationsourcenews.com/wp-content/uploads/2025/01/460955675_935408241957081_10519834652997610_n.jpg",
-        title: "Dubai Luxury Experience",
-        description: "5-day all-inclusive package with desert safari and Burj Khalifa visit",
-        price: "2,500"
-      },
-      {
-        imageUrl: "https://profit.pakistantoday.com.pk/wp-content/uploads/2017/11/qatar-airways.jpg",
-        title: "Magical Istanbul",
-        description: "7-day cultural tour including Hagia Sophia and Bosphorus cruise",
-        price: "3,500"
-      },
-      {
-        imageUrl: "https://www.inp.net.pk/images/20231011170554_original_24.webp",
-        title: "Maldives Paradise",
-        description: "Romantic overwater bungalow getaway with snorkeling and spa",
-        price: "5,000"
-      },
-      {
-        imageUrl: "https://media.connections.be/image/upload/c_fill,g_auto,q_auto:best,w_3840,f_auto//v1646757971/Airlines/Emirates/777-300.jpg",
-        title: "London Explorer",
-        description: "6-day city tour with visits to Buckingham Palace and West End show",
-        price: "4,000"
-      }
-    ];
-    
-    let currentBranch = "";
-    let isLoading = false;
-    let currentSlide = 0;
-    let slideInterval;
-    
-    function handleLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-      
-      if (branchData[username] && branchData[username].password === password) {
-        currentBranch = branchData[username].branchName;
-        document.getElementById("branchName").innerText = currentBranch;
-        document.querySelector('input[name="branch"]').value = currentBranch;
-        
-        document.getElementById("loginSection").classList.add("hidden");
-        document.getElementById("branchSection").classList.remove("hidden");
-        document.getElementById("formSection").classList.remove("hidden");
-        
-        // Initialize enhanced slideshow
-        initSlideshow();
-        
-        showNotification("Login successful! Welcome " + currentBranch);
-      } else {
-        showNotification("Incorrect username or password", true);
-      }
-    }
-    
-    function calculateProfit() {
-      const costPrice = parseFloat(document.getElementById("costPrice").value) || 0;
-      const cashTaken = parseFloat(document.getElementById("cashTaken").value) || 0;
-      document.getElementById("profit").value = (cashTaken - costPrice).toFixed(2);
-    }
-    
-    function calculateBalance() {
-      const receivedCash = parseFloat(document.getElementById("receivedCash").value) || 0;
-      const cashTaken = parseFloat(document.getElementById("cashTaken").value) || 0;
-      document.getElementById("balance").value = (receivedCash - cashTaken).toFixed(2);
-    }
-    
-    function handleSubmit(event) {
-      event.preventDefault();
-      if (isLoading) return;
-      
-      const form = document.getElementById("travelForm");
-      const formData = new FormData(form);
-      const submitBtn = document.getElementById("submitBtn");
-      
-      formData.set("branch", currentBranch);
-      
-      const mobileNumberRaw = formData.get("mobileNumber").replace(/\D/g, '');
-      const customerName = formData.get("customerName");
-      const message = `✨ *New Booking Confirmation* ✨
 
-❤️ *Customer Name:* ${customerName}
-📱 *Mobile Number:* ${mobileNumberRaw}
-🎫 *PNR:* ${formData.get("pnr")}
-✈️ *Trip Type:* ${formData.get("tripType")}
-📅 *Travel Date:* ${formData.get("travelDate")}
+  <div class="container-fluid px-4">
+    <!-- SLIDESHOW SECTION -->
+    <div class="hero-slideshow mb-4 rounded-3 overflow-hidden">
+      <div class="slide active" style="background-image: url('https://placehold.co/1200x400/0d9488/white?text=Explore Pakistan')">
+        <div class="slide-content">
+          <h2 class="slide-title">Explore Pakistan</h2>
+          <p class="slide-subtitle">Mountains • Deserts • Coastlines</p>
+        </div>
+      </div>
+      <div class="slide" style="background-image: url('https://placehold.co/1200x400/0d9488/white?text=Hunza+Valley')">
+        <div class="slide-content">
+          <h2 class="slide-title">Hunza Valley</h2>
+          <p class="slide-subtitle">Where Heaven Meets Earth</p>
+        </div>
+      </div>
+      <div class="slide" style="background-image: url('https://placehold.co/1200x400/fdba74/white?text=Karachi+Coast')">
+        <div class="slide-content">
+          <h2 class="slide-title">Karachi Coast</h2>
+          <p class="slide-subtitle">Sun, Sand & Sea</p>
+        </div>
+      </div>
+    </div>
 
-💰 *Financial Details:*
-- Cost Price: SAR ${formData.get("costPrice")}
-- Cash Taken: SAR ${formData.get("cashTaken")}
-- Profit: SAR ${formData.get("profit")}
-- Received Cash: SAR ${formData.get("receivedCash")}
-- Balance: SAR ${formData.get("balance")}
+    <!-- HEADER -->
+    <div class="app-header d-flex align-items-center justify-content-between mb-4 fade-in">
+      <div class="d-flex align-items-center">
+        <div class="header-icon">✈️</div>
+        <div>
+          <h4 class="mb-0">Travel Agency WebApp</h4>
+          <div class="small-muted" id="whoami">Not logged in</div>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-outline-secondary d-none" id="btnLogout">Logout</button>
+      </div>
+    </div>
 
-🏢 *Branch:* ${currentBranch}
+    <!-- LOGIN -->
+    <div class="card p-4 mb-4 fade-in" id="loginCard">
+      <h5 class="mb-3 text-center">🔐 Agency Login</h5>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label small text-muted">Username</label>
+          <input class="form-control" id="lgUser" placeholder="e.g., admin">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small text-muted">Password</label>
+          <input class="form-control" id="lgPass" placeholder="••••••••" type="password">
+        </div>
+        <div class="col-md-4 d-grid align-self-end">
+          <button class="btn btn-primary" id="btnLogin">Login to Dashboard</button>
+        </div>
+      </div>
+      <div class="mt-3 text-danger small text-center" id="loginMsg"></div>
+    </div>
 
-Thank you for choosing us! Safe travels! ✈️`;
-      
-      const countryCode = mobileNumberRaw.startsWith("05") ? "966" : "92";
-      const fullMobile = `${countryCode}${mobileNumberRaw.substring(mobileNumberRaw.startsWith("0") ? 1 : 0)}`;
-      document.getElementById("whatsappLink").href = `https://wa.me/${fullMobile}?text=${encodeURIComponent(message)}`;
-      document.getElementById("whatsappButtonContainer").classList.remove("hidden");
+    <!-- APP -->
+    <div id="app" class="d-none">
+      <!-- NAV TABS -->
+      <ul class="nav nav-pills gap-2 mb-4 p-2 bg-gray-100 rounded-3 fade-in">
+        <li class="nav-item"><button class="nav-link active" data-tab="dash">📊 Dashboard</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="add">➕ Add Booking</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="search">🔍 Search Records</button></li>
+        <li class="nav-item d-none" id="tabRecycleWrap"><button class="nav-link" data-tab="recycle">🗑️ Recycle Bin</button></li>
+      </ul>
 
-      // Show loading state
-      isLoading = true;
-      submitBtn.innerHTML = '<span class="spinner"></span> Processing...';
-      submitBtn.disabled = true;
-      
-      fetch(scriptURL, {
-        method: "POST",
-        body: formData
-      })
-        .then(res => res.text())
-        .then(data => {
-          showNotification("Booking submitted successfully!");
-          form.reset();
-          window.scrollTo(0, document.body.scrollHeight);
-        })
-        .catch(err => {
-          showNotification("Error submitting booking", true);
-          console.error(err);
-        })
-        .finally(() => {
-          isLoading = false;
-          submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Booking';
-          submitBtn.disabled = false;
-        });
-    }
-    
-    function showNotification(message, isError = false) {
-      const notification = document.getElementById("notification");
-      const notificationMessage = document.getElementById("notificationMessage");
-      
-      notificationMessage.textContent = message;
-      notification.className = isError ? "notification error show" : "notification show";
-      
-      if (isError) {
-        notification.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + notification.innerHTML;
-      }
-      
-      setTimeout(() => {
-        notification.classList.remove("show");
-      }, 5000);
-    }
-    
-    function showSection(section) {
-      document.getElementById("formSection").classList.toggle("hidden", section !== "form");
-      document.getElementById("searchSection").classList.toggle("hidden", section !== "search");
-      
-      if (section === "search") {
-        document.getElementById("searchQuery").focus();
-        clearInterval(slideInterval);
-      } else if (section === "form") {
-        clearInterval(slideInterval);
-      } else {
-        // When returning to dashboard
-        startSlideInterval();
-      }
-    }
-    
-    function searchRecord() {
-      const query = document.getElementById("searchQuery").value.trim();
-      if (!query) return;
-      
-      const searchResult = document.getElementById("searchResult");
-      searchResult.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Searching...</p>';
-      
-      fetch(`${scriptURL}?search=${encodeURIComponent(query)}&branch=${encodeURIComponent(currentBranch)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.length === 0) {
-            searchResult.innerHTML = "<p>No records found matching your search.</p>";
-            return;
-          }
-          
-          // Get all unique keys from the first record
-          const headers = Object.keys(data[0]);
-          
-          // Create table HTML
-          let html = `
-            <div class="table-container">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    ${headers.map(header => 
-                      `<th>${header.replace(/([A-Z])/g, ' $1').replace(/\s+/g, ' ').trim()}</th>`
-                    ).join('')}
-                  </tr>
-                </thead>
-                <tbody>
-                  ${data.map(record => `
-                    <tr>
-                      ${headers.map(header => 
-                        `<td>${record[header] || '-'}</td>`
-                      ).join('')}
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
+      <!-- DASHBOARD -->
+      <div id="tab-dash" class="fade-in">
+        <div class="row g-3 mb-4" id="dashCards"></div>
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="card p-4 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <h6 class="section-title">Today Sale vs Profit</h6>
+                  <div class="small-muted">Auto-calculated from live data</div>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" id="btnRefreshDash">🔄 Refresh</button>
+              </div>
+              <canvas id="chToday" height="140"></canvas>
             </div>
-          `;
-          
-          searchResult.innerHTML = html;
-        })
-        .catch(err => {
-          showNotification("Search failed", true);
-          console.error(err);
-          searchResult.innerHTML = "<p>Error loading search results. Please try again.</p>";
-        });
-    }
-    
-    // Enhanced slideshow functions
-    function initSlideshow() {
-      const slideshowContainer = document.querySelector('.slideshow-container');
-      const dotsContainer = document.querySelector('.slideshow-dots');
-      
-      // Clear existing content
-      slideshowContainer.innerHTML = '';
-      dotsContainer.innerHTML = '';
-      
-      // Create slides
-      slideshowData.forEach((slide, index) => {
-        const slideElement = document.createElement('div');
-        slideElement.className = `slide ${index === 0 ? 'active' : ''}`;
-        slideElement.innerHTML = `
-          <img src="${slide.imageUrl}" alt="${slide.title}">
-          <div class="slide-content">
-            <div class="slide-title">${slide.title}</div>
-            <div class="slide-description">${slide.description}</div>
-            <div class="slide-price" style="margin-top: 10px; font-weight: 600;">SAR ${slide.price}</div>
           </div>
-        `;
-        slideshowContainer.appendChild(slideElement);
-        
-        // Create dots
-        const dot = document.createElement('div');
-        dot.className = `dot ${index === 0 ? 'active' : ''}`;
-        dot.onclick = () => goToSlide(index);
-        dotsContainer.appendChild(dot);
+          <div class="col-lg-6">
+            <div class="card p-4 h-100">
+              <h6 class="section-title">Month Sale vs Profit</h6>
+              <div class="small-muted mb-2">Updated in real-time</div>
+              <canvas id="chMonth" height="140"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD BOOKING -->
+      <div id="tab-add" class="d-none fade-in">
+        <div class="card p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="section-title">➕ Add New Booking</h5>
+              <p class="small-muted mb-0">All fields update profit & pending automatically</p>
+            </div>
+            <span class="badge text-bg-light px-3 py-2" id="invHint">Invoice: Auto-generated</span>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-3 d-none" id="adminBranchWrap">
+              <label class="form-label small text-muted">Branch</label>
+              <select class="form-select" id="bkBranch">
+                <option value="Shahzad">Shahzad</option>
+                <option value="Madni">Madni</option>
+                <option value="Usman">Usman</option>
+                <option value="Tahir">Tahir</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Customer Name</label>
+              <input class="form-control" id="bkCustomer" placeholder="e.g., Ali Khan">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Mobile</label>
+              <input class="form-control" id="bkMobile" placeholder="+92...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted">PNR / Ticket #</label>
+              <input class="form-control" id="bkPNR" placeholder="ABC123">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Trip Type</label>
+              <select class="form-select" id="bkTrip">
+                <option>One Way</option>
+                <option>Two Way</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Travel Date</label>
+              <input class="form-control" id="bkTravel" type="date">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Return Date</label>
+              <input class="form-control" id="bkReturn" type="date">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Airline</label>
+              <input class="form-control" id="bkAirline" placeholder="e.g., PIA, Emirates">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Cost Price (PKR)</label>
+              <input class="form-control" id="bkCost" placeholder="15,000">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Sale Price (PKR)</label>
+              <input class="form-control" id="bkSale" placeholder="20,000">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Cash Received</label>
+              <input class="form-control" id="bkCash" placeholder="0" value="0">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Payment Mode</label>
+              <select class="form-select" id="bkPayMode">
+                <option>Cash</option>
+                <option>Bank</option>
+                <option>Card</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Status</label>
+              <select class="form-select" id="bkStatus">
+                <option>On Hold</option>
+                <option>Issued</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Profit (auto)</label>
+              <input class="form-control bg-light" id="bkProfit" placeholder="—" readonly>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Pending (auto)</label>
+              <input class="form-control bg-light" id="bkPending" placeholder="—" readonly>
+            </div>
+
+            <div class="col-12 d-grid mt-2">
+              <button class="btn btn-success btn-lg" id="btnAdd">✅ Save & Confirm Booking</button>
+            </div>
+          </div>
+
+          <div class="mt-3 text-center small" id="addMsg"></div>
+        </div>
+      </div>
+
+      <!-- SEARCH -->
+      <div id="tab-search" class="d-none fade-in">
+        <div class="card p-4 mb-4">
+          <h6 class="section-title">🔍 Advanced Search</h6>
+          <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+              <input class="form-control" id="srQuery" placeholder="PNR, Mobile, or Customer Name">
+            </div>
+            <div class="col-md-2 d-none" id="adminBranchFilterWrap">
+              <select class="form-select" id="srBranch">
+                <option value="ALL">All Branches</option>
+                <option value="Shahzad">Shahzad</option>
+                <option value="Madni">Madni</option>
+                <option value="Usman">Usman</option>
+                <option value="Tahir">Tahir</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <select class="form-select" id="srDateMode">
+                <option value="">All Time</option>
+                <option value="TODAY">Today</option>
+                <option value="MONTH">This Month</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-grid">
+              <button class="btn btn-primary" id="btnSearch">🔎 Search Records</button>
+            </div>
+          </div>
+          <div class="small text-muted mt-2">💡 Admin: Edit/Delete actions appear in results table.</div>
+        </div>
+
+        <div class="card p-4">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Branch</th><th>Inv</th><th>Name</th><th>Mobile</th><th>PNR</th><th>Trip</th>
+                  <th>Travel</th><th>Return</th><th>Airline</th>
+                  <th>Cost</th><th>Sale</th><th>Profit</th><th>Cash</th><th>Pending</th>
+                  <th>Pay</th><th>Status</th><th>DateTime</th>
+                  <th id="thAdminActions" class="d-none">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="srBody"></tbody>
+            </table>
+          </div>
+          <div class="small text-muted text-center mt-3" id="srCount"></div>
+        </div>
+      </div>
+
+      <!-- RECYCLE BIN -->
+      <div id="tab-recycle" class="d-none fade-in">
+        <div class="card p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="section-title">🗑️ Recycle Bin</h6>
+              <p class="small-muted mb-0">Restore accidentally deleted bookings</p>
+            </div>
+            <button class="btn btn-outline-primary" id="btnLoadDeleted">📥 Load Deleted</button>
+          </div>
+        </div>
+
+        <div class="card p-4">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Branch</th><th>Inv</th><th>Name</th><th>Mobile</th><th>PNR</th><th>Sale</th><th>Status</th><th>Restore</th>
+                </tr>
+              </thead>
+              <tbody id="delBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content" style="border-radius:16px">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title text-primary">✏️ Edit Booking</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body pt-0">
+          <div class="small text-muted mb-3 p-2 bg-light rounded" id="editMeta">Loading...</div>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <input class="form-control" id="edCustomer" placeholder="Customer Name">
+            </div>
+            <div class="col-md-4">
+              <input class="form-control" id="edMobile" placeholder="Mobile">
+            </div>
+            <div class="col-md-4">
+              <input class="form-control" id="edPNR" placeholder="PNR / Ticket">
+            </div>
+
+            <div class="col-md-4">
+              <select class="form-select" id="edTrip">
+                <option>One Way</option>
+                <option>Two Way</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <input class="form-control" id="edTravel" type="date">
+            </div>
+            <div class="col-md-4">
+              <input class="form-control" id="edReturn" type="date">
+            </div>
+
+            <div class="col-md-4">
+              <input class="form-control" id="edAirline" placeholder="Airline">
+            </div>
+            <div class="col-md-4">
+              <input class="form-control" id="edCost" placeholder="Cost Price">
+            </div>
+            <div class="col-md-4">
+              <input class="form-control" id="edSale" placeholder="Sale Price">
+            </div>
+
+            <div class="col-md-4">
+              <input class="form-control" id="edCash" placeholder="Cash Received">
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="edPay">
+                <option>Cash</option><option>Bank</option><option>Card</option><option>Other</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="edStatus">
+                <option>On Hold</option><option>Issued</option><option>Deleted</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <input class="form-control bg-light" id="edProfit" placeholder="Profit (auto)" readonly>
+              <div class="small text-muted mt-1">Sale − Cost</div>
+            </div>
+            <div class="col-md-6">
+              <input class="form-control bg-light" id="edPending" placeholder="Pending (auto)" readonly>
+              <div class="small text-muted mt-1">Sale − Cash</div>
+            </div>
+          </div>
+
+          <div class="text-danger small mt-3 text-center" id="edMsg"></div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" id="btnSaveEdit">💾 Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // =============== SLIDESHOW ===============
+    let currentSlide = 0;
+    let slides = document.querySelectorAll('.slide');
+    const slideInterval = 5000;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
       });
-      
-      currentSlide = 0;
-      startSlideInterval();
     }
-    
-    function startSlideInterval() {
-      clearInterval(slideInterval);
-      slideInterval = setInterval(nextSlide, 5000);
-    }
-    
+
     function nextSlide() {
-      const slides = document.querySelectorAll('.slide');
-      const dots = document.querySelectorAll('.dot');
-      
-      slides[currentSlide].classList.remove('active');
-      dots[currentSlide].classList.remove('active');
-      
       currentSlide = (currentSlide + 1) % slides.length;
-      
-      slides[currentSlide].classList.add('active');
-      dots[currentSlide].classList.add('active');
-      
-      // Restart interval when manually navigating
-      startSlideInterval();
+      showSlide(currentSlide);
     }
-    
-    function prevSlide() {
-      const slides = document.querySelectorAll('.slide');
-      const dots = document.querySelectorAll('.dot');
+
+    // Auto-rotate
+    setInterval(nextSlide, slideInterval);
+
+    // =============== SIDE MENU ===============
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
       
-      slides[currentSlide].classList.remove('active');
-      dots[currentSlide].classList.remove('active');
-      
-      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-      
-      slides[currentSlide].classList.add('active');
-      dots[currentSlide].classList.add('active');
-      
-      // Restart interval when manually navigating
-      startSlideInterval();
+      ['dash','add','search','recycle'].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.classList.toggle('d-none', t !== tabId);
+      });
     }
-    
-    function goToSlide(index) {
-      const slides = document.querySelectorAll('.slide');
-      const dots = document.querySelectorAll('.dot');
-      
-      slides[currentSlide].classList.remove('active');
-      dots[currentSlide].classList.remove('active');
-      
-      currentSlide = index;
-      
-      slides[currentSlide].classList.add('active');
-      dots[currentSlide].classList.add('active');
-      
-      // Restart interval when manually navigating
-      startSlideInterval();
+
+    // =============== LOGIN FUNCTIONALITY ===============
+    const $ = (id)=>document.getElementById(id);
+    let state = { username: "", role: "", branch: "" };
+    let charts = { today: null, month: null };
+    let editCtx = { sheet:"", rowNumber:0 };
+
+    function saveSession(u){ localStorage.setItem("ta_session", JSON.stringify(u)); }
+    function loadSession(){
+      try { return JSON.parse(localStorage.getItem("ta_session")||"null"); } catch(e){ return null; }
     }
-    
-    // Set default date to today
-    document.addEventListener("DOMContentLoaded", function() {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementsByName("travelDate")[0].value = today;
-      document.getElementsByName("travelDate")[0].min = today;
+    function clearSession(){ localStorage.removeItem("ta_session"); }
+
+    async function api(action, data){
+      const body = new URLSearchParams({ action, ...data });
+      const r = await fetch("https://script.google.com/macros/s/AKfycbyoqxlvdSGvTWGYKp9sQuB2U9lfDzGKY6VfuzUahwNoDTgxY2aChR5V_fvaHB-mw00/exec", { method:"POST", body });
+      return await r.json();
+    }
+
+    function money(x){
+      const n = Number(String(x||"0").replace(/,/g,""));
+      return isNaN(n) ? "0" : n.toLocaleString();
+    }
+    function calcProfitPending(cost, sale, cash){
+      cost = Number(String(cost||"0").replace(/,/g,""))||0;
+      sale = Number(String(sale||"0").replace(/,/g,""))||0;
+      cash = Number(String(cash||"0").replace(/,/g,""))||0;
+      return { profit: sale-cost, pending: sale-cash };
+    }
+
+    document.querySelectorAll(".nav-link").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        document.querySelectorAll(".nav-link").forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+        const tab = btn.getAttribute("data-tab");
+        ["dash","add","search","recycle"].forEach(t=>{
+          const el = $(`tab-${t}`);
+          if(el) el.classList.toggle("d-none", t!==tab);
+        });
+      });
     });
+
+    $("btnLogin").addEventListener("click", async ()=>{
+      $("loginMsg").textContent = "";
+      const username = $("lgUser").value.trim();
+      const password = $("lgPass").value.trim();
+      if(!username || !password){ $("loginMsg").textContent = "⚠️ Enter username & password"; return; }
+
+      const res = await api("login", { username, password });
+      if(!res.ok){ $("loginMsg").textContent = res.message || "Login failed"; return; }
+
+      state = res.user;
+      saveSession(state);
+      afterLogin();
+    });
+
+    $("btnLogout").addEventListener("click", ()=>{
+      clearSession();
+      location.reload();
+    });
+
+    document.getElementById('sideLogout').addEventListener('click', () => {
+      clearSession();
+      location.reload();
+    });
+
+    function afterLogin(){
+      // Show side menu after login
+      document.getElementById('sideMenu').classList.add('show');
+      
+      $("loginCard").classList.add("d-none");
+      $("app").classList.remove("d-none");
+      $("btnLogout").classList.remove("d-none");
+      $("whoami").textContent = `Logged in: ${state.username} | ${state.role} | ${state.branch}`;
+
+      const isAdmin = String(state.role).toLowerCase()==="admin";
+      $("adminBranchWrap").classList.toggle("d-none", !isAdmin);
+      $("adminBranchFilterWrap").classList.toggle("d-none", !isAdmin);
+      $("thAdminActions").classList.toggle("d-none", !isAdmin);
+      $("tabRecycleWrap").classList.toggle("d-none", !isAdmin);
+
+      document.querySelector('[data-tab="dash"]').click();
+      refreshDash();
+    }
+
+    $("btnRefreshDash").addEventListener("click", refreshDash);
+
+    async function refreshDash(){
+      const res = await api("dashboard", { username: state.username, role: state.role, branch: state.branch });
+      if(!res.ok) return;
+
+      const d = res.dash;
+      const cards = [
+        { title:"Today Sale", val: money(d.todaySale), icon:"💰" },
+        { title:"Today Profit", val: money(d.todayProfit), icon:"📈" },
+        { title:"Month Sale", val: money(d.monthSale), icon:"📊" },
+        { title:"Month Profit", val: money(d.monthProfit), icon:"💎" },
+        { title:"Pending Total", val: money(d.pendingTotal), icon:"⏳" },
+        { title:"Issued Today", val: String(d.issuedToday), icon:"✅" },
+        { title:"On Hold Today", val: String(d.holdToday), icon:"⏸️" },
+      ];
+
+      $("dashCards").innerHTML = cards.map(c=>
+        `<div class="col-md-3 col-6 fade-in" style="animation-delay:${cards.indexOf(c)*0.1}s">
+          <div class="card stat-card">
+            <div class="title">${c.title}</div>
+            <div class="value">${c.val}</div>
+            <div class="mt-1">${c.icon}</div>
+          </div>
+        </div>`
+      ).join("");
+
+      const ctxT = $("chToday");
+      const ctxM = $("chMonth");
+      if(charts.today) charts.today.destroy();
+      if(charts.month) charts.month.destroy();
+
+      charts.today = new Chart(ctxT, {
+        type:"bar",
+        data:{ labels:["Sale","Profit"], datasets:[{ data:[d.todaySale, d.todayProfit], backgroundColor: ["#93c5fd", "#34d399"] }] },
+        options:{ 
+          responsive:true, 
+          plugins: { legend: { display: false } }, 
+          scales: { y: { beginAtZero: true } } 
+        }
+      });
+
+      charts.month = new Chart(ctxM, {
+        type:"bar",
+        data:{ labels:["Sale","Profit"], datasets:[{ data:[d.monthSale, d.monthProfit], backgroundColor: ["#60a5fa", "#10b981"] }] },
+        options:{ 
+          responsive:true, 
+          plugins: { legend: { display: false } }, 
+          scales: { y: { beginAtZero: true } } 
+        }
+      });
+    }
+
+    ["bkCost","bkSale","bkCash"].forEach(id=>{
+      $(id).addEventListener("input", ()=>{
+        const r = calcProfitPending($("bkCost").value, $("bkSale").value, $("bkCash").value);
+        $("bkProfit").value = money(r.profit);
+        $("bkPending").value = money(r.pending);
+      });
+    });
+
+    $("btnAdd").addEventListener("click", async ()=>{
+      $("addMsg").textContent = "";
+      const isAdmin = String(state.role).toLowerCase()==="admin";
+
+      const payload = {
+        username: state.username,
+        role: state.role,
+        targetBranch: isAdmin ? $("bkBranch").value : "",
+        customerName: $("bkCustomer").value.trim(),
+        mobile: $("bkMobile").value.trim(),
+        pnr: $("bkPNR").value.trim(),
+        tripType: $("bkTrip").value,
+        travelDate: $("bkTravel").value,
+        returnDate: $("bkReturn").value,
+        airline: $("bkAirline").value.trim(),
+        costPrice: $("bkCost").value.trim(),
+        salePrice: $("bkSale").value.trim(),
+        cashReceived: $("bkCash").value.trim(),
+        paymentMode: $("bkPayMode").value,
+        bookingStatus: $("bkStatus").value
+      };
+
+      const res = await api("addBooking", payload);
+      if(!res.ok){ 
+        $("addMsg").textContent = "❌ " + (res.message || "Save failed"); 
+        $("addMsg").className="mt-2 small text-danger";
+        return; 
+      }
+
+      $("addMsg").textContent = `✅ Saved! Invoice: ${res.invoice}`;
+      $("addMsg").className="mt-2 small text-success";
+
+      ["bkCustomer","bkMobile","bkPNR","bkAirline","bkCost","bkSale"].forEach(x=>$(x).value="");
+      $("bkCash").value="0";
+      $("bkProfit").value="";
+      $("bkPending").value="";
+      refreshDash();
+    });
+
+    $("btnSearch").addEventListener("click", runSearch);
+
+    async function runSearch(includeDeleted=false){
+      $("srBody").innerHTML = "";
+      $("srCount").textContent = "⏳ Loading...";
+      const isAdmin = String(state.role).toLowerCase()==="admin";
+
+      const payload = {
+        username: state.username,
+        query: $("srQuery").value.trim(),
+        dateMode: $("srDateMode").value,
+        branch: isAdmin ? $("srBranch").value : "",
+        includeDeleted: includeDeleted ? "1" : ""
+      };
+
+      const res = await api("search", payload);
+      if(!res.ok){ $("srCount").textContent = "❌ " + (res.message || "Search failed"); return; }
+
+      const rows = res.rows || [];
+      $("srCount").textContent = `✅ Found ${rows.length} record${rows.length!==1?'s':''}`;
+
+      $("srBody").innerHTML = rows.map(r=>{
+        const d = r.data || {};
+        return `<tr>
+          <td>${d["Branch"]||r.sheet}</td>
+          <td>${d["Invoice No"]||""}</td>
+          <td>${d["Customer Name"]||""}</td>
+          <td>${d["Mobile"]||""}</td>
+          <td>${d["PNR / Ticket"]||""}</td>
+          <td>${d["Trip Type"]||""}</td>
+          <td>${d["Travel Date"]||""}</td>
+          <td>${d["Return Date"]||""}</td>
+          <td>${d["Airline"]||""}</td>
+          <td class="text-end">${money(d["Cost Price"])}</td>
+          <td class="text-end">${money(d["Sale Price"])}</td>
+          <td class="text-end text-success">${money(d["Profit"])}</td>
+          <td class="text-end">${money(d["Cash Received"])}</td>
+          <td class="text-end text-warning">${money(d["Pending"])}</td>
+          <td>${d["Payment Mode"]||""}</td>
+          <td><span class="badge ${d["Booking Status"]==="Issued"?"bg-success":"bg-warning"}">${d["Booking Status"]||""}</span></td>
+          <td>${d["Date & Time"]||""}</td>
+          ${isAdmin ? `<td>
+            <button class="btn btn-sm btn-outline-primary" onclick="openEdit('${r.sheet}', ${r.rowNumber})">✏️</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="softDelete('${r.sheet}', ${r.rowNumber})">🗑️</button>
+            <button class="btn btn-sm btn-outline-success" onclick="waMsg('${d["Mobile"]||""}','${d["PNR / Ticket"]||""}','${d["Customer Name"]||""}','${d["Travel Date"]||""}','${money(d["Sale Price"])}','${money(d["Pending"])}')">📱</button>
+          </td>` : ""} 
+        </tr>`;
+      }).join("");
+    }
+
+    window.softDelete = async (sheet, rowNumber)=>{
+      if(!confirm("⚠️ Soft delete this booking?")) return;
+      const res = await api("deleteBooking", { username: state.username, sheet, rowNumber });
+      if(!res.ok){ alert("❌ "+(res.message||"Failed")); return; }
+      alert("✅ Deleted to recycle bin");
+      runSearch();
+      refreshDash();
+    };
+
+    window.openEdit = async (sheet, rowNumber)=>{
+      const res = await api("getRow", { username: state.username, sheet, rowNumber });
+      if(!res.ok){ alert("❌ "+(res.message||"Fetch failed")); return; }
+
+      editCtx = { sheet, rowNumber };
+      const d = res.data;
+
+      $("editMeta").textContent = `Sheet: ${sheet} • Row: ${rowNumber} • Invoice: ${d["Invoice No"] || "N/A"}`;
+
+      $("edCustomer").value = d["Customer Name"]||"";
+      $("edMobile").value = d["Mobile"]||"";
+      $("edPNR").value = d["PNR / Ticket"]||"";
+      $("edTrip").value = d["Trip Type"]||"One Way";
+      $("edTravel").value = d["Travel Date"]||"";
+      $("edReturn").value = d["Return Date"]||"";
+      $("edAirline").value = d["Airline"]||"";
+      $("edCost").value = d["Cost Price"]||"";
+      $("edSale").value = d["Sale Price"]||"";
+      $("edCash").value = d["Cash Received"]||"0";
+      $("edPay").value = d["Payment Mode"]||"Cash";
+      $("edStatus").value = d["Booking Status"]||"On Hold";
+
+      const rr = calcProfitPending($("edCost").value, $("edSale").value, $("edCash").value);
+      $("edProfit").value = money(rr.profit);
+      $("edPending").value = money(rr.pending);
+
+      $("edMsg").textContent = "";
+      new bootstrap.Modal(document.getElementById("editModal")).show();
+    };
+
+    ["edCost","edSale","edCash"].forEach(id=>{
+      $(id).addEventListener("input", ()=>{
+        const r = calcProfitPending($("edCost").value, $("edSale").value, $("edCash").value);
+        $("edProfit").value = money(r.profit);
+        $("edPending").value = money(r.pending);
+      });
+    });
+
+    $("btnSaveEdit").addEventListener("click", async ()=>{
+      $("edMsg").textContent = "";
+      const p = {
+        username: state.username,
+        sheet: editCtx.sheet,
+        rowNumber: editCtx.rowNumber,
+        customerName: $("edCustomer").value.trim(),
+        mobile: $("edMobile").value.trim(),
+        pnr: $("edPNR").value.trim(),
+        tripType: $("edTrip").value,
+        travelDate: $("edTravel").value,
+        returnDate: $("edReturn").value,
+        airline: $("edAirline").value.trim(),
+        costPrice: $("edCost").value.trim(),
+        salePrice: $("edSale").value.trim(),
+        cashReceived: $("edCash").value.trim(),
+        paymentMode: $("edPay").value,
+        bookingStatus: $("edStatus").value
+      };
+
+      const res = await api("updateBooking", p);
+      if(!res.ok){ $("edMsg").textContent = "❌ "+(res.message||"Update failed"); return; }
+
+      bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+      runSearch();
+      refreshDash();
+      setTimeout(()=>alert("✅ Booking updated successfully!"), 100);
+    });
+
+    $("btnLoadDeleted").addEventListener("click", async ()=>{
+      const res = await api("search", {
+        username: state.username,
+        query: "",
+        dateMode: "",
+        branch: "ALL",
+        includeDeleted: "1"
+      });
+      if(!res.ok){ alert("❌ "+(res.message||"Load failed")); return; }
+
+      const del = (res.rows||[]).filter(x => String((x.data||{})["Booking Status"]||"").toLowerCase()==="deleted");
+      $("delBody").innerHTML = del.map(r=>{
+        const d = r.data||{};
+        return `<tr>
+          <td>${r.sheet}</td>
+          <td>${d["Invoice No"]||""}</td>
+          <td>${d["Customer Name"]||""}</td>
+          <td>${d["Mobile"]||""}</td>
+          <td>${d["PNR / Ticket"]||""}</td>
+          <td class="text-end">${money(d["Sale Price"])}</td>
+          <td><span class="badge bg-danger">Deleted</span></td>
+          <td><button class="btn btn-sm btn-success" onclick="restoreRow('${r.sheet}', ${r.rowNumber})">↩️ Restore</button></td>
+        </tr>`;
+      }).join("");
+    });
+
+    window.restoreRow = async (sheet, rowNumber)=>{
+      if(!confirm("Restore this booking to 'On Hold' status?")) return;
+      const res = await api("restoreBooking", { username: state.username, sheet, rowNumber, restoreTo:"On Hold" });
+      if(!res.ok){ alert("❌ "+(res.message||"Restore failed")); return; }
+      alert("✅ Restored successfully");
+      $("btnLoadDeleted").click();
+      runSearch();
+      refreshDash();
+    };
+
+    window.waMsg = (mobile, pnr, name, travel, sale, pending)=>{
+      const text = `✈️ *Booking Invoice*\n\n👤 Name: ${name}\n🎫 PNR: ${pnr}\n📅 Travel: ${travel}\n💸 Total: ${sale}\n⏳ Pending: ${pending}`;
+      const url = `https://wa.me/${mobile}?text=${encodeURIComponent(text)}`;
+      window.open(url, "_blank");
+    };
+
+    (function init(){
+      const sess = loadSession();
+      if(sess && sess.username){
+        state = sess;
+        afterLogin();
+      }
+    })();
   </script>
 </body>
 </html>
