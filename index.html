@@ -1,660 +1,438 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Travel Agency WebApp</title>
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
-    :root {
-      --primary: #1e40af;
-      --primary-dark: #1d3696;
-      --secondary: #0d9488;
-      --accent: #fdba74;
-      --light-bg: #f8fafc;
-      --card-bg: #ffffff;
-      --shadow: 0 4px 20px rgba(0,0,0,0.05);
-      --border-radius: 16px;
+    :root{
+      --bg:#0b1220;
+      --card:#0f1a2e;
+      --card2:#121f38;
+      --text:#e6eefc;
+      --muted:#9fb2d3;
+      --line:rgba(255,255,255,.08);
+      --pri:#4f8cff;
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --radius:18px;
     }
-
-    body {
-      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      color: #1e293b;
-      overflow-x: hidden;
-      position: relative;
+    body{background:radial-gradient(1200px 800px at 20% 10%, rgba(79,140,255,.18), transparent 55%),
+                     radial-gradient(1200px 800px at 80% 0%, rgba(34,197,94,.12), transparent 55%),
+                     var(--bg);
+         color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .card{background:linear-gradient(180deg,var(--card),var(--card2)); border:1px solid var(--line);
+          border-radius:var(--radius); box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .btn{border-radius:14px}
+    .form-control,.form-select{
+      background:#0b1529; color:var(--text); border:1px solid var(--line); border-radius:14px
     }
-
-    /* Side Menu - Hidden by default */
-    .side-menu {
-      position: fixed;
-      top: 120px;
-      left: 0;
-      z-index: 1050;
-      width: 50px;
-      background: white;
-      border-right: 1px solid #e2e8f0;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.1);
-      padding: 10px 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.3s ease;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .side-menu.show {
-      opacity: 1;
-      pointer-events: all;
-    }
-    .side-menu:hover {
-      width: 200px;
-    }
-    .side-menu-item {
-      width: 100%;
-      padding: 12px 15px;
-      text-align: center;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 0.9rem;
-    }
-    .side-menu-item:hover {
-      background: var(--primary);
-      color: white;
-    }
-    .side-menu-item i {
-      font-size: 1.2rem;
-    }
-    .side-menu-item span {
-      display: none;
-      white-space: nowrap;
-    }
-    .side-menu:hover .side-menu-item span {
-      display: inline;
-    }
-
-    /* Slideshow */
-    .hero-slideshow {
-      position: relative;
-      height: 350px;
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow);
-    }
-    .slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      background-size: cover;
-      background-position: center;
-    }
-    .slide.active {
-      opacity: 1;
-    }
-    .slide-content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-      color: white;
-      padding: 2rem;
-    }
-    .slide-title {
-      font-size: 2.2rem;
-      font-weight: 800;
-      margin: 0;
-    }
-    .slide-subtitle {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
-
-    /* Header */
-    .app-header {
-      background: white;
-      border-radius: var(--border-radius);
-      padding: 1rem 1.5rem;
-      box-shadow: var(--shadow);
-      margin-bottom: 1.5rem;
-    }
-
-    .navbar-brand {
-      font-weight: 700;
-      font-size: 1.5rem;
-      color: var(--primary);
-    }
-
-    .card {
-      border: 0;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      background: var(--card-bg);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-
-    .btn {
-      border-radius: 12px;
-      font-weight: 600;
-      padding: 0.6rem 1.25rem;
-    }
-
-    .btn-primary {
-      background-color: var(--primary);
-      border-color: var(--primary);
-    }
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
-      border-color: var(--primary-dark);
-    }
-
-    .btn-success {
-      background-color: var(--secondary);
-      border-color: var(--secondary);
-    }
-
-    .badge {
-      border-radius: 999px;
-      font-weight: 600;
-    }
-
-    .nav-pills .nav-link {
-      border-radius: 12px;
-      padding: 0.6rem 1.25rem;
-      font-weight: 600;
-      color: #475569;
-      transition: all 0.25s ease;
-    }
-
-    .nav-pills .nav-link.active {
-      background-color: var(--primary);
-      color: white;
-    }
-
-    .nav-pills .nav-link:hover:not(.active) {
-      background-color: #f1f5f9;
-    }
-
-    .small-muted {
-      font-size: 0.85rem;
-      color: #64748b;
-    }
-
-    .table thead th {
-      white-space: nowrap;
-      font-weight: 600;
-      color: #334155;
-    }
-
-    .table-hover tbody tr:hover {
-      background-color: #f8fafc;
-    }
-
-    /* Dashboard stat cards */
-    .stat-card {
-      text-align: center;
-      padding: 1.25rem;
-    }
-    .stat-card .title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #64748b;
-      margin-bottom: 0.5rem;
-    }
-    .stat-card .value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-
-    .section-title {
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: var(--primary);
-      margin-bottom: 0.75rem;
-    }
-
-    .section-subtitle {
-      color: #64748b;
-      font-size: 0.9rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .form-control, .form-select {
-      border-radius: 10px;
-      border: 1px solid #cbd5e1;
-      padding: 0.6rem 1rem;
-    }
-
-    .form-control:focus, .form-select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
-    }
-
-    @media (max-width: 768px) {
-      .hero-slideshow { height: 250px; }
-      .slide-title { font-size: 1.5rem; }
-      .slide-subtitle { font-size: 1rem; }
-      .side-menu {
-        top: 80px;
-        width: 40px;
-      }
-      .side-menu:hover {
-        width: 160px;
-      }
-    }
-
-    .fade-in {
-      animation: fadeIn 0.6s ease forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .header-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      margin-right: 12px;
-    }
+    .form-control:focus,.form-select:focus{box-shadow:0 0 0 .2rem rgba(79,140,255,.22); border-color:rgba(79,140,255,.5)}
+    .table{color:var(--text)}
+    .table thead th{background:#0b1529; color:var(--muted); border-bottom:1px solid var(--line); white-space:nowrap}
+    .table td{border-bottom:1px solid var(--line); vertical-align:middle}
+    .badge{border-radius:999px}
+    .small-muted{color:var(--muted); font-size:.9rem}
+    .pointer{cursor:pointer}
+    .nav-pills .nav-link{border-radius:14px; color:var(--muted)}
+    .nav-pills .nav-link.active{background:rgba(79,140,255,.18); color:var(--text); border:1px solid rgba(79,140,255,.28)}
+    .topbar{position:sticky; top:0; z-index:99; backdrop-filter: blur(10px);
+            background:rgba(11,18,32,.72); border-bottom:1px solid var(--line)}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+    .hidden{display:none!important}
   </style>
 </head>
+
 <body>
-  <!-- Side Menu - Initially Hidden -->
-  <div class="side-menu" id="sideMenu">
-    <div class="side-menu-item" onclick="switchTab('dash')">
-      <i>📊</i><span>Dashboard</span>
-    </div>
-    <div class="side-menu-item" onclick="switchTab('add')">
-      <i>➕</i><span>Add Booking</span>
-    </div>
-    <div class="side-menu-item" onclick="switchTab('search')">
-      <i>🔍</i><span>Search Records</span>
-    </div>
-    <div class="side-menu-item" onclick="switchTab('recycle')">
-      <i>🗑️</i><span>Recycle Bin</span>
-    </div>
-    <div class="side-menu-item text-danger" id="sideLogout">
-      <i>🚪</i><span>Logout</span>
+  <div class="topbar">
+    <div class="container py-3 d-flex align-items-center justify-content-between">
+      <div>
+        <div class="fw-bold">Alharbi Travel WebApp</div>
+        <div class="small-muted">Admin Dashboard • Search • Add • Edit/Delete (Admin Only)</div>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <span id="whoami" class="small-muted"></span>
+        <button id="btnLogout" class="btn btn-outline-light btn-sm hidden">Logout</button>
+      </div>
     </div>
   </div>
 
-  <div class="container-fluid px-4">
-    <!-- SLIDESHOW SECTION -->
-    <div class="hero-slideshow mb-4 rounded-3 overflow-hidden">
-      <div class="slide active" style="background-image: url('https://placehold.co/1200x400/0d9488/white?text=Explore Pakistan')">
-        <div class="slide-content">
-          <h2 class="slide-title">Explore Pakistan</h2>
-          <p class="slide-subtitle">Mountains • Deserts • Coastlines</p>
-        </div>
-      </div>
-      <div class="slide" style="background-image: url('https://placehold.co/1200x400/0d9488/white?text=Hunza+Valley')">
-        <div class="slide-content">
-          <h2 class="slide-title">Hunza Valley</h2>
-          <p class="slide-subtitle">Where Heaven Meets Earth</p>
-        </div>
-      </div>
-      <div class="slide" style="background-image: url('https://placehold.co/1200x400/fdba74/white?text=Karachi+Coast')">
-        <div class="slide-content">
-          <h2 class="slide-title">Karachi Coast</h2>
-          <p class="slide-subtitle">Sun, Sand & Sea</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- HEADER -->
-    <div class="app-header d-flex align-items-center justify-content-between mb-4 fade-in">
-      <div class="d-flex align-items-center">
-        <div class="header-icon">✈️</div>
-        <div>
-          <h4 class="mb-0">Travel Agency WebApp</h4>
-          <div class="small-muted" id="whoami">Not logged in</div>
-        </div>
-      </div>
-      <div>
-        <button class="btn btn-outline-secondary d-none" id="btnLogout">Logout</button>
-      </div>
-    </div>
+  <div class="container my-4">
 
     <!-- LOGIN -->
-    <div class="card p-4 mb-4 fade-in" id="loginCard">
-      <h5 class="mb-3 text-center">🔐 Agency Login</h5>
-      <div class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label small text-muted">Username</label>
-          <input class="form-control" id="lgUser" placeholder="e.g., admin">
-        </div>
-        <div class="col-md-4">
-          <label class="form-label small text-muted">Password</label>
-          <input class="form-control" id="lgPass" placeholder="••••••••" type="password">
-        </div>
-        <div class="col-md-4 d-grid align-self-end">
-          <button class="btn btn-primary" id="btnLogin">Login to Dashboard</button>
+    <div id="viewLogin" class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-5">
+        <div class="card p-4">
+          <h4 class="mb-1">🔐 Login</h4>
+          <div class="small-muted mb-3">Users sheet se login hota hai</div>
+
+          <div class="mb-3">
+            <label class="small-muted mb-1">Username</label>
+            <input id="loginUser" class="form-control" placeholder="admin / shahzad / madni...">
+          </div>
+          <div class="mb-3">
+            <label class="small-muted mb-1">Password</label>
+            <input id="loginPass" type="password" class="form-control" placeholder="••••••">
+          </div>
+
+          <button id="btnLogin" class="btn btn-primary w-100">Login</button>
+          <div id="loginMsg" class="small-muted mt-3"></div>
         </div>
       </div>
-      <div class="mt-3 text-danger small text-center" id="loginMsg"></div>
     </div>
 
     <!-- APP -->
-    <div id="app" class="d-none">
-      <!-- NAV TABS -->
-      <ul class="nav nav-pills gap-2 mb-4 p-2 bg-gray-100 rounded-3 fade-in">
-        <li class="nav-item"><button class="nav-link active" data-tab="dash">📊 Dashboard</button></li>
-        <li class="nav-item"><button class="nav-link" data-tab="add">➕ Add Booking</button></li>
-        <li class="nav-item"><button class="nav-link" data-tab="search">🔍 Search Records</button></li>
-        <li class="nav-item d-none" id="tabRecycleWrap"><button class="nav-link" data-tab="recycle">🗑️ Recycle Bin</button></li>
-      </ul>
+    <div id="viewApp" class="hidden">
+      <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
+        <ul class="nav nav-pills gap-2" id="tabs">
+          <li class="nav-item"><button class="nav-link active" data-tab="dash">📊 Dashboard</button></li>
+          <li class="nav-item"><button class="nav-link" data-tab="bookings">📋 Bookings</button></li>
+          <li class="nav-item"><button class="nav-link" data-tab="add">➕ Add New</button></li>
+          <li class="nav-item"><button class="nav-link" data-tab="customers">👥 Customers</button></li>
+          <li class="nav-item"><button class="nav-link" data-tab="packages">✈️ Packages/Tours</button></li>
+        </ul>
+
+        <div class="d-flex gap-2">
+          <button id="btnRefresh" class="btn btn-outline-light btn-sm">Refresh</button>
+        </div>
+      </div>
 
       <!-- DASHBOARD -->
-      <div id="tab-dash" class="fade-in">
-        <div class="row g-3 mb-4" id="dashCards"></div>
-        <div class="row g-4">
-          <div class="col-lg-6">
-            <div class="card p-4 h-100">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                  <h6 class="section-title">Today Sale vs Profit</h6>
-                  <div class="small-muted">Auto-calculated from live data</div>
-                </div>
-                <button class="btn btn-sm btn-outline-primary" id="btnRefreshDash">🔄 Refresh</button>
+      <div id="tab-dash">
+        <div class="row g-3 mb-3" id="dashCards"></div>
+
+        <div class="row g-3">
+          <div class="col-12 col-lg-8">
+            <div class="card p-3">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="fw-semibold">Daily Sale (Last 7 days)</div>
+                <div class="small-muted" id="dashMeta"></div>
               </div>
-              <canvas id="chToday" height="140"></canvas>
+              <canvas id="chDailySale" height="120"></canvas>
             </div>
           </div>
-          <div class="col-lg-6">
-            <div class="card p-4 h-100">
-              <h6 class="section-title">Month Sale vs Profit</h6>
-              <div class="small-muted mb-2">Updated in real-time</div>
-              <canvas id="chMonth" height="140"></canvas>
+          <div class="col-12 col-lg-4">
+            <div class="card p-3">
+              <div class="fw-semibold mb-2">Quick Tips</div>
+              <div class="small-muted">
+                • Admin: Edit/Delete allowed<br/>
+                • User: Only own branch data<br/>
+                • Profit & Pending auto calculate<br/>
+                • Search by Name/Mobile/PNR/Status
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ADD BOOKING -->
-      <div id="tab-add" class="d-none fade-in">
-        <div class="card p-4">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <h5 class="section-title">➕ Add New Booking</h5>
-              <p class="small-muted mb-0">All fields update profit & pending automatically</p>
+      <!-- BOOKINGS -->
+      <div id="tab-bookings" class="hidden">
+        <div class="card p-3 mb-3">
+          <div class="row g-2 align-items-end">
+            <div class="col-12 col-lg-4">
+              <label class="small-muted mb-1">Search</label>
+              <input id="q" class="form-control" placeholder="Name / Mobile / PNR / Airline / Status">
             </div>
-            <span class="badge text-bg-light px-3 py-2" id="invHint">Invoice: Auto-generated</span>
+
+            <div class="col-6 col-lg-2">
+              <label class="small-muted mb-1">From</label>
+              <input id="fromDate" type="date" class="form-control">
+            </div>
+
+            <div class="col-6 col-lg-2">
+              <label class="small-muted mb-1">To</label>
+              <input id="toDate" type="date" class="form-control">
+            </div>
+
+            <div class="col-12 col-lg-2">
+              <label class="small-muted mb-1">Branch (Admin)</label>
+              <select id="branchFilter" class="form-select"></select>
+            </div>
+
+            <div class="col-12 col-lg-2 d-grid">
+              <button id="btnSearch" class="btn btn-primary">Search</button>
+            </div>
+          </div>
+          <div class="small-muted mt-2" id="searchMsg"></div>
+        </div>
+
+        <div class="card p-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="fw-semibold">Results</div>
+            <div class="small-muted" id="count"></div>
           </div>
 
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+              <tr>
+                <th>Branch</th>
+                <th>Invoice</th>
+                <th>Customer</th>
+                <th>Mobile</th>
+                <th>PNR</th>
+                <th>Sale</th>
+                <th>Profit</th>
+                <th>Pending</th>
+                <th>Status</th>
+                <th>DateTime</th>
+                <th class="text-end">Actions</th>
+              </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD -->
+      <div id="tab-add" class="hidden">
+        <div class="card p-4">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+              <h5 class="mb-1">➕ Add New Booking</h5>
+              <div class="small-muted">Profit & Pending auto calculate</div>
+            </div>
+            <div class="small-muted">Branch: <span id="addBranchShow" class="fw-semibold"></span></div>
+          </div>
+
+          <hr style="border-color:var(--line)">
+
           <div class="row g-3">
-            <div class="col-md-3 d-none" id="adminBranchWrap">
-              <label class="form-label small text-muted">Branch</label>
-              <select class="form-select" id="bkBranch">
-                <option value="Shahzad">Shahzad</option>
-                <option value="Madni">Madni</option>
-                <option value="Usman">Usman</option>
-                <option value="Tahir">Tahir</option>
+            <div class="col-12 col-lg-4">
+              <label class="small-muted mb-1">Customer Name</label>
+              <input id="aCustomerName" class="form-control" placeholder="Customer name">
+            </div>
+            <div class="col-12 col-lg-4">
+              <label class="small-muted mb-1">Mobile</label>
+              <input id="aMobile" class="form-control" placeholder="05xxxxxxxx">
+            </div>
+            <div class="col-12 col-lg-4">
+              <label class="small-muted mb-1">PNR / Ticket</label>
+              <input id="aPNR" class="form-control" placeholder="PNR / Ticket number">
+            </div>
+
+            <div class="col-12 col-lg-3">
+              <label class="small-muted mb-1">Trip Type</label>
+              <select id="aTripType" class="form-select">
+                <option value="One Way">One Way</option>
+                <option value="Two Way">Two Way</option>
               </select>
             </div>
-
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Customer Name</label>
-              <input class="form-control" id="bkCustomer" placeholder="e.g., Ali Khan">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Travel Date</label>
+              <input id="aTravelDate" type="date" class="form-control">
             </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Mobile</label>
-              <input class="form-control" id="bkMobile" placeholder="05...">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Return Date</label>
+              <input id="aReturnDate" type="date" class="form-control">
             </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">PNR / Ticket #</label>
-              <input class="form-control" id="bkPNR" placeholder="ABC123">
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Trip Type</label>
-              <select class="form-select" id="bkTrip">
-                <option>One Way</option>
-                <option>Two Way</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Travel Date</label>
-              <input class="form-control" id="bkTravel" type="date">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Return Date</label>
-              <input class="form-control" id="bkReturn" type="date">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Airline</label>
-              <input class="form-control" id="bkAirline" placeholder="e.g., PIA, Emirates">
-
+            <div class="col-12 col-lg-3">
+              <label class="small-muted mb-1">Airline</label>
+              <input id="aAirline" class="form-control" placeholder="SV / PK / etc">
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Cost Price (SAR)</label>
-              <input class="form-control" id="bkCost" placeholder="15,000">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Cost Price</label>
+              <input id="aCost" type="number" class="form-control" value="0">
             </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Sale Price (SAR)</label>
-              <input class="form-control" id="bkSale" placeholder="20,000">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Sale Price</label>
+              <input id="aSale" type="number" class="form-control" value="0">
             </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Cash Received</label>
-              <input class="form-control" id="bkCash" placeholder="0" value="0">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Cash Received</label>
+              <input id="aCash" type="number" class="form-control" value="0">
             </div>
-
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Payment Mode</label>
-              <select class="form-select" id="bkPayMode">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Payment Mode</label>
+              <select id="aPayMode" class="form-select">
                 <option>Cash</option>
-                <option>Bank</option>
+                <option>Bank Transfer</option>
                 <option>Card</option>
                 <option>Other</option>
               </select>
             </div>
 
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Status</label>
-              <select class="form-select" id="bkStatus">
-                <option>On Hold</option>
+            <div class="col-12 col-lg-6">
+              <div class="card p-3" style="border-radius:16px">
+                <div class="d-flex justify-content-between">
+                  <div class="small-muted">Profit</div>
+                  <div class="fw-semibold" id="aProfit">0</div>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                  <div class="small-muted">Pending</div>
+                  <div class="fw-semibold" id="aPending">0</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+              <label class="small-muted mb-1">Booking Status</label>
+              <select id="aStatus" class="form-select">
                 <option>Issued</option>
+                <option>On Hold</option>
+                <option>Cancelled</option>
+                <option>Refund</option>
               </select>
-            </div>
 
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Profit (auto)</label>
-              <input class="form-control bg-light" id="bkProfit" placeholder="—" readonly>
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Pending (auto)</label>
-              <input class="form-control bg-light" id="bkPending" placeholder="—" readonly>
-            </div>
-
-            <div class="col-12 d-grid mt-2">
-              <button class="btn btn-success btn-lg" id="btnAdd">✅ Save & Confirm Booking</button>
+              <button id="btnAdd" class="btn btn-primary w-100 mt-3">Save Booking</button>
+              <div class="small-muted mt-2" id="addMsg"></div>
             </div>
           </div>
-
-          <div class="mt-3 text-center small" id="addMsg"></div>
         </div>
       </div>
 
-      <!-- SEARCH -->
-      <div id="tab-search" class="d-none fade-in">
-        <div class="card p-4 mb-4">
-          <h6 class="section-title">🔍 Advanced Search</h6>
-          <div class="row g-3 align-items-end">
-            <div class="col-md-4">
-              <input class="form-control" id="srQuery" placeholder="PNR, Mobile, or Customer Name">
-            </div>
-            <div class="col-md-2 d-none" id="adminBranchFilterWrap">
-              <select class="form-select" id="srBranch">
-                <option value="ALL">All Branches</option>
-                <option value="Shahzad">Shahzad</option>
-                <option value="Madni">Madni</option>
-                <option value="Usman">Usman</option>
-                <option value="Tahir">Tahir</option>
-              </select>
-            </div>
-            <div class="col-md-2">
-              <select class="form-select" id="srDateMode">
-                <option value="">All Time</option>
-                <option value="TODAY">Today</option>
-                <option value="MONTH">This Month</option>
-              </select>
-            </div>
-            <div class="col-md-2 d-grid">
-              <button class="btn btn-primary" id="btnSearch">🔎 Search Records</button>
-            </div>
-          </div>
-          <div class="small text-muted mt-2">💡 Admin: Edit/Delete actions appear in results table.</div>
-        </div>
-
+      <!-- CUSTOMERS -->
+      <div id="tab-customers" class="hidden">
         <div class="card p-4">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th>Branch</th><th>Inv</th><th>Name</th><th>Mobile</th><th>PNR</th><th>Trip</th>
-                  <th>Travel</th><th>Return</th><th>Airline</th>
-                  <th>Cost</th><th>Sale</th><th>Profit</th><th>Cash</th><th>Pending</th>
-                  <th>Pay</th><th>Status</th><th>DateTime</th>
-                  <th id="thAdminActions" class="d-none">Actions</th>
-                </tr>
+          <h5 class="mb-1">👥 Customers List</h5>
+          <div class="small-muted mb-3">Bookings se unique customers list nikalti hai</div>
+
+          <button id="btnLoadCustomers" class="btn btn-outline-light btn-sm">Load Customers</button>
+          <div class="small-muted mt-2" id="custMsg"></div>
+
+          <div class="table-responsive mt-3">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Mobile</th>
+                <th>Branch</th>
+                <th>Last Booking</th>
+              </tr>
               </thead>
-              <tbody id="srBody"></tbody>
+              <tbody id="custRows"></tbody>
             </table>
           </div>
-          <div class="small text-muted text-center mt-3" id="srCount"></div>
         </div>
       </div>
 
-      <!-- RECYCLE BIN -->
-      <div id="tab-recycle" class="d-none fade-in">
-        <div class="card p-4 mb-4">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h6 class="section-title">🗑️ Recycle Bin</h6>
-              <p class="small-muted mb-0">Restore accidentally deleted bookings</p>
-            </div>
-            <button class="btn btn-outline-primary" id="btnLoadDeleted">📥 Load Deleted</button>
-          </div>
-        </div>
-
+      <!-- PACKAGES -->
+      <div id="tab-packages" class="hidden">
         <div class="card p-4">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th>Branch</th><th>Inv</th><th>Name</th><th>Mobile</th><th>PNR</th><th>Sale</th><th>Status</th><th>Restore</th>
-                </tr>
-              </thead>
-              <tbody id="delBody"></tbody>
-            </table>
+          <h5 class="mb-1">✈️ Packages / Tours</h5>
+          <div class="small-muted">
+            Abhi aap ki sheet me Packages wali sheet nahi hai.<br/>
+            Agar chaho to main “Packages” sheet add karwa ke full management (Add/Edit/Delete) bhi connect kar dunga.
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- EDIT MODAL -->
-  <div class="modal fade" id="editModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content" style="border-radius:16px">
-        <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title text-primary">✏️ Edit Booking</h5>
-          <button class="btn-close" data-bs-dismiss="modal"></button>
+  <!-- VIEW MODAL -->
+  <div class="modal fade" id="modalView" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" style="background:#0b1529;border:1px solid var(--line);border-radius:18px;color:var(--text)">
+        <div class="modal-header" style="border-color:var(--line)">
+          <h5 class="modal-title">👁️ Booking Details</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body pt-0">
-          <div class="small text-muted mb-3 p-2 bg-light rounded" id="editMeta">Loading...</div>
+        <div class="modal-body" id="viewBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div class="modal fade" id="modalEdit" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" style="background:#0b1529;border:1px solid var(--line);border-radius:18px;color:var(--text)">
+        <div class="modal-header" style="border-color:var(--line)">
+          <h5 class="modal-title">✏️ Edit Booking (Admin only)</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="small-muted mb-2">Sheet: <span id="eSheet" class="mono"></span> • Row: <span id="eRow" class="mono"></span></div>
 
           <div class="row g-3">
-            <div class="col-md-4">
-              <input class="form-control" id="edCustomer" placeholder="Customer Name">
+            <div class="col-12 col-lg-4">
+              <label class="small-muted mb-1">Customer Name</label>
+              <input id="eCustomerName" class="form-control">
             </div>
-            <div class="col-md-4">
-              <input class="form-control" id="edMobile" placeholder="Mobile">
+            <div class="col-12 col-lg-4">
+              <label class="small-muted mb-1">Mobile</label>
+              <input id="eMobile" class="form-control">
             </div>
-            <div class="col-md-4">
-              <input class="form-control" id="edPNR" placeholder="PNR / Ticket">
+            <div class="col-12 col-lg-4">
+              <label class="small-muted mb-1">PNR / Ticket</label>
+              <input id="ePNR" class="form-control">
             </div>
 
-            <div class="col-md-4">
-              <select class="form-select" id="edTrip">
-                <option>One Way</option>
-                <option>Two Way</option>
+            <div class="col-12 col-lg-3">
+              <label class="small-muted mb-1">Trip Type</label>
+              <select id="eTripType" class="form-select">
+                <option value="One Way">One Way</option>
+                <option value="Two Way">Two Way</option>
               </select>
             </div>
-            <div class="col-md-4">
-              <input class="form-control" id="edTravel" type="date">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Travel Date</label>
+              <input id="eTravelDate" type="date" class="form-control">
             </div>
-            <div class="col-md-4">
-              <input class="form-control" id="edReturn" type="date">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Return Date</label>
+              <input id="eReturnDate" type="date" class="form-control">
             </div>
-
-            <div class="col-md-4">
-              <input class="form-control" id="edAirline" placeholder="Airline">
-            </div>
-            <div class="col-md-4">
-              <input class="form-control" id="edCost" placeholder="Cost Price">
-            </div>
-            <div class="col-md-4">
-              <input class="form-control" id="edSale" placeholder="Sale Price">
+            <div class="col-12 col-lg-3">
+              <label class="small-muted mb-1">Airline</label>
+              <input id="eAirline" class="form-control">
             </div>
 
-            <div class="col-md-4">
-              <input class="form-control" id="edCash" placeholder="Cash Received">
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Cost Price</label>
+              <input id="eCost" type="number" class="form-control" value="0">
             </div>
-            <div class="col-md-4">
-              <select class="form-select" id="edPay">
-                <option>Cash</option><option>Bank</option><option>Card</option><option>Other</option>
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Sale Price</label>
+              <input id="eSale" type="number" class="form-control" value="0">
+            </div>
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Cash Received</label>
+              <input id="eCash" type="number" class="form-control" value="0">
+            </div>
+            <div class="col-6 col-lg-3">
+              <label class="small-muted mb-1">Payment Mode</label>
+              <select id="ePayMode" class="form-select">
+                <option>Cash</option>
+                <option>Bank Transfer</option>
+                <option>Card</option>
+                <option>Other</option>
               </select>
             </div>
-            <div class="col-md-4">
-              <select class="form-select" id="edStatus">
-                <option>On Hold</option><option>Issued</option><option>Deleted</option>
-              </select>
+
+            <div class="col-12 col-lg-6">
+              <div class="card p-3" style="border-radius:16px">
+                <div class="d-flex justify-content-between">
+                  <div class="small-muted">Profit</div>
+                  <div class="fw-semibold" id="eProfit">0</div>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                  <div class="small-muted">Pending</div>
+                  <div class="fw-semibold" id="ePending">0</div>
+                </div>
+              </div>
             </div>
 
-            <div class="col-md-6">
-              <input class="form-control bg-light" id="edProfit" placeholder="Profit (auto)" readonly>
-              <div class="small text-muted mt-1">Sale − Cost</div>
-            </div>
-            <div class="col-md-6">
-              <input class="form-control bg-light" id="edPending" placeholder="Pending (auto)" readonly>
-              <div class="small text-muted mt-1">Sale − Cash</div>
+            <div class="col-12 col-lg-6">
+              <label class="small-muted mb-1">Booking Status</label>
+              <select id="eStatus" class="form-select">
+                <option>Issued</option>
+                <option>On Hold</option>
+                <option>Cancelled</option>
+                <option>Refund</option>
+              </select>
+
+              <button id="btnSaveEdit" class="btn btn-primary w-100 mt-3">Save Changes</button>
+              <div class="small-muted mt-2" id="editMsg"></div>
             </div>
           </div>
 
-          <div class="text-danger small mt-3 text-center" id="edMsg"></div>
-        </div>
-        <div class="modal-footer border-0 pt-0">
-          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button class="btn btn-primary" id="btnSaveEdit">💾 Save Changes</button>
         </div>
       </div>
     </div>
@@ -663,395 +441,456 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // =============== SLIDESHOW ===============
-    let currentSlide = 0;
-    let slides = document.querySelectorAll('.slide');
-    const slideInterval = 5000;
+    /************ CONFIG ************/
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzCgHh6YSK75UKdX53uib5YBDBhlk0RZdpV9p4uNqO44LdQPcxNkZqNF_qaHbv-S-3aNQ/exec";
 
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.classList.toggle('active', i === index);
-      });
-    }
+    /************ STATE ************/
+    let SESSION = null; // {token, user:{username,role,branch}}
+    let chDailySale = null;
 
-    function nextSlide() {
-      currentSlide = (currentSlide + 1) % slides.length;
-      showSlide(currentSlide);
-    }
-
-    // Auto-rotate
-    setInterval(nextSlide, slideInterval);
-
-    // =============== SIDE MENU ===============
-    function switchTab(tabId) {
-      document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-      
-      ['dash','add','search','recycle'].forEach(t => {
-        const el = document.getElementById(`tab-${t}`);
-        if (el) el.classList.toggle('d-none', t !== tabId);
-      });
-    }
-
-    // =============== LOGIN FUNCTIONALITY ===============
     const $ = (id)=>document.getElementById(id);
-    let state = { username: "", role: "", branch: "" };
-    let charts = { today: null, month: null };
-    let editCtx = { sheet:"", rowNumber:0 };
 
-    function saveSession(u){ localStorage.setItem("ta_session", JSON.stringify(u)); }
+    function setMsg(el, text, type="muted"){
+      el.innerHTML = text ? text : "";
+      el.style.color = (type==="bad") ? "var(--bad)" : (type==="good" ? "var(--good)" : "var(--muted)");
+    }
+
+    function money(n){
+      n = Number(n||0);
+      return n.toLocaleString(undefined,{minimumFractionDigits:0, maximumFractionDigits:0});
+    }
+
+    function toISODate(yyyyMMddHHmmss){
+      // if already yyyy-mm-dd...
+      if(!yyyyMMddHHmmss) return "";
+      const s = String(yyyyMMddHHmmss);
+      if(s.length>=10 && s[4]==="-" && s[7]==="-") return s.slice(0,10);
+      return "";
+    }
+
+    async function api(action, data={}){
+      if(action!=="login"){
+        if(!SESSION?.token) throw new Error("Not logged in");
+        data.token = SESSION.token;
+      }
+      data.action = action;
+
+      const body = new URLSearchParams(data);
+      const res = await fetch(WEBAPP_URL, { method:"POST", body });
+      const json = await res.json();
+      if(!json.ok) throw new Error(json.error || "API error");
+      return json;
+    }
+
+    function saveSession(){
+      localStorage.setItem("TA_SESSION", JSON.stringify(SESSION));
+    }
     function loadSession(){
-      try { return JSON.parse(localStorage.getItem("ta_session")||"null"); } catch(e){ return null; }
+      try{
+        const raw = localStorage.getItem("TA_SESSION");
+        if(!raw) return null;
+        return JSON.parse(raw);
+      }catch(e){ return null; }
     }
-    function clearSession(){ localStorage.removeItem("ta_session"); }
+    function clearSession(){
+      localStorage.removeItem("TA_SESSION");
+      SESSION=null;
+    }
 
-    async function api(action, data){
-      const body = new URLSearchParams({ action, ...data });
-      const r = await fetch("https://script.google.com/macros/s/AKfycbyoqxlvdSGvTWGYKp9sQuB2U9lfDzGKY6VfuzUahwNoDTgxY2aChR5V_fvaHB-mw00/exec", { method:"POST", body });
-      return await r.json();
+    function showTab(key){
+      document.querySelectorAll("#tabs .nav-link").forEach(b=>b.classList.remove("active"));
+      document.querySelector(`#tabs .nav-link[data-tab="${key}"]`)?.classList.add("active");
+
+      ["dash","bookings","add","customers","packages"].forEach(k=>{
+        const el = document.querySelector(`#tab-${k}`);
+        if(el) el.classList.toggle("hidden", k!==key);
+      });
     }
 
-    function money(x){
-      const n = Number(String(x||"0").replace(/,/g,""));
-      return isNaN(n) ? "0" : n.toLocaleString();
+    function setWhoAmI(){
+      const u = SESSION?.user;
+      $("whoami").textContent = u ? `${u.username} • ${u.role.toUpperCase()} • ${u.branch}` : "";
+      $("btnLogout").classList.toggle("hidden", !u);
+      $("addBranchShow").textContent = u?.role==="admin" ? "Select in Add (auto uses Branch field if added later)" : (u?.branch || "");
     }
+
+    function fillBranchFilter(){
+      const u = SESSION.user;
+      const sel = $("branchFilter");
+      sel.innerHTML = "";
+      if(u.role==="admin"){
+        sel.innerHTML += `<option value="">ALL</option>
+                          <option value="Shahzad">Shahzad</option>
+                          <option value="Madni">Madni</option>
+                          <option value="Usman">Usman</option>
+                          <option value="Tahir">Tahir</option>`;
+      }else{
+        sel.innerHTML = `<option value="${u.branch}">${u.branch}</option>`;
+      }
+    }
+
+    /************ DASHBOARD ************/
+    function renderCards(stats){
+      const cards = [
+        {label:"Total Bookings", val:stats.totalBookings},
+        {label:"Total Sale", val:money(stats.totalSale)},
+        {label:"Total Profit", val:money(stats.totalProfit)},
+        {label:"Total Pending", val:money(stats.totalPending)},
+        {label:"Today Bookings", val:stats.todayBookings},
+        {label:"This Month Sale", val:money(stats.monthSale)},
+      ];
+
+      $("dashCards").innerHTML = cards.map(c=>`
+        <div class="col-6 col-lg-2">
+          <div class="card p-3 h-100">
+            <div class="small-muted">${c.label}</div>
+            <div class="fs-5 fw-bold mt-1">${c.val}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderDailySaleChart(labels, values){
+      const ctx = $("chDailySale");
+      if(chDailySale) chDailySale.destroy();
+
+      chDailySale = new Chart(ctx, {
+        type: "line",
+        data: { labels, datasets: [{ label:"Sale", data: values, tension:.35 }] },
+        options: {
+          responsive:true,
+          plugins:{ legend:{ display:false } },
+          scales:{
+            x:{ ticks:{ color:"#9fb2d3" }, grid:{ color:"rgba(255,255,255,.06)" } },
+            y:{ ticks:{ color:"#9fb2d3" }, grid:{ color:"rgba(255,255,255,.06)" } }
+          }
+        }
+      });
+    }
+
+    async function loadDashboard(){
+      const out = await api("dashboard",{});
+      renderCards(out.stats);
+      $("dashMeta").textContent = `${out.user.role.toUpperCase()} • ${out.user.branch}`;
+      renderDailySaleChart(out.charts.dailySale.labels, out.charts.dailySale.values);
+    }
+
+    /************ SEARCH / TABLE ************/
+    function badgeStatus(s){
+      s = (s||"").toLowerCase();
+      let cls="bg-secondary";
+      if(s.includes("issued")) cls="bg-success";
+      else if(s.includes("hold")) cls="bg-warning text-dark";
+      else if(s.includes("cancel")) cls="bg-danger";
+      else if(s.includes("refund")) cls="bg-info text-dark";
+      return `<span class="badge ${cls}">${(s||"").toUpperCase()}</span>`;
+    }
+
+    function rowActionsHtml(isAdmin, sheet, rowIndex){
+      const viewBtn = `<button class="btn btn-sm btn-outline-light me-1" onclick="openView('${sheet}',${rowIndex})">View</button>`;
+      const editBtn = isAdmin ? `<button class="btn btn-sm btn-primary me-1" onclick="openEdit('${sheet}',${rowIndex})">Edit</button>` : "";
+      const delBtn  = isAdmin ? `<button class="btn btn-sm btn-danger" onclick="doDelete('${sheet}',${rowIndex})">Delete</button>` : "";
+      return `${viewBtn}${editBtn}${delBtn}`;
+    }
+
+    function renderRows(list){
+      const isAdmin = SESSION.user.role==="admin";
+      $("rows").innerHTML = list.map(r=>{
+        const d=r.data;
+        return `
+          <tr>
+            <td>${d.Branch}</td>
+            <td class="mono">${d.InvoiceNo}</td>
+            <td>${d.CustomerName}</td>
+            <td class="mono">${d.Mobile}</td>
+            <td class="mono">${d.PNR}</td>
+            <td class="mono">${money(d.SalePrice)}</td>
+            <td class="mono">${money(d.Profit)}</td>
+            <td class="mono">${money(d.Pending)}</td>
+            <td>${badgeStatus(d.BookingStatus)}</td>
+            <td class="small-muted mono">${d.DateTime || ""}</td>
+            <td class="text-end">${rowActionsHtml(isAdmin, r.sheet, r.rowIndex)}</td>
+          </tr>
+        `;
+      }).join("");
+      $("count").textContent = `${list.length} record(s)`;
+    }
+
+    async function runSearch(){
+      setMsg($("searchMsg"), "Searching...", "muted");
+      const data = {
+        q: $("q").value.trim(),
+        fromDate: $("fromDate").value,
+        toDate: $("toDate").value,
+        branch: $("branchFilter").value
+      };
+      const out = await api("search", data);
+      renderRows(out.results);
+      setMsg($("searchMsg"), out.count ? "Done ✅" : "No records found", out.count ? "good" : "muted");
+    }
+
+    /************ VIEW / EDIT / DELETE ************/
+    const viewModal = new bootstrap.Modal(document.getElementById("modalView"));
+    const editModal = new bootstrap.Modal(document.getElementById("modalEdit"));
+
+    window.openView = async (sheet,rowIndex)=>{
+      const out = await api("getRow",{sheet,rowIndex});
+      const d = out.data;
+
+      $("viewBody").innerHTML = `
+        <div class="row g-3">
+          ${Object.keys(d).map(k=>`
+            <div class="col-12 col-md-6">
+              <div class="card p-3">
+                <div class="small-muted">${k}</div>
+                <div class="fw-semibold">${(d[k]??"")}</div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+      viewModal.show();
+    };
+
     function calcProfitPending(cost, sale, cash){
-      cost = Number(String(cost||"0").replace(/,/g,""))||0;
-      sale = Number(String(sale||"0").replace(/,/g,""))||0;
-      cash = Number(String(cash||"0").replace(/,/g,""))||0;
+      cost=Number(cost||0); sale=Number(sale||0); cash=Number(cash||0);
       return { profit: sale-cost, pending: sale-cash };
     }
 
-    document.querySelectorAll(".nav-link").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        document.querySelectorAll(".nav-link").forEach(x=>x.classList.remove("active"));
-        btn.classList.add("active");
-        const tab = btn.getAttribute("data-tab");
-        ["dash","add","search","recycle"].forEach(t=>{
-          const el = $(`tab-${t}`);
-          if(el) el.classList.toggle("d-none", t!==tab);
-        });
-      });
-    });
-
-    $("btnLogin").addEventListener("click", async ()=>{
-      $("loginMsg").textContent = "";
-      const username = $("lgUser").value.trim();
-      const password = $("lgPass").value.trim();
-      if(!username || !password){ $("loginMsg").textContent = "⚠️ Enter username & password"; return; }
-
-      const res = await api("login", { username, password });
-      if(!res.ok){ $("loginMsg").textContent = res.message || "Login failed"; return; }
-
-      state = res.user;
-      saveSession(state);
-      afterLogin();
-    });
-
-    $("btnLogout").addEventListener("click", ()=>{
-      clearSession();
-      location.reload();
-    });
-
-    document.getElementById('sideLogout').addEventListener('click', () => {
-      clearSession();
-      location.reload();
-    });
-
-    function afterLogin(){
-      // Show side menu after login
-      document.getElementById('sideMenu').classList.add('show');
-      
-      $("loginCard").classList.add("d-none");
-      $("app").classList.remove("d-none");
-      $("btnLogout").classList.remove("d-none");
-      $("whoami").textContent = `Logged in: ${state.username} | ${state.role} | ${state.branch}`;
-
-      const isAdmin = String(state.role).toLowerCase()==="admin";
-      $("adminBranchWrap").classList.toggle("d-none", !isAdmin);
-      $("adminBranchFilterWrap").classList.toggle("d-none", !isAdmin);
-      $("thAdminActions").classList.toggle("d-none", !isAdmin);
-      $("tabRecycleWrap").classList.toggle("d-none", !isAdmin);
-
-      document.querySelector('[data-tab="dash"]').click();
-      refreshDash();
+    function fillEdit(d){
+      $("eCustomerName").value = d.CustomerName || "";
+      $("eMobile").value = d.Mobile || "";
+      $("ePNR").value = d.PNR || "";
+      $("eTripType").value = d.TripType || "One Way";
+      $("eTravelDate").value = toISODate(d.TravelDate);
+      $("eReturnDate").value = toISODate(d.ReturnDate);
+      $("eAirline").value = d.Airline || "";
+      $("eCost").value = Number(d.CostPrice||0);
+      $("eSale").value = Number(d.SalePrice||0);
+      $("eCash").value = Number(d.CashReceived||0);
+      $("ePayMode").value = d.PaymentMode || "Cash";
+      $("eStatus").value = d.BookingStatus || "Issued";
+      updateEditCalc();
     }
 
-    $("btnRefreshDash").addEventListener("click", refreshDash);
-
-    async function refreshDash(){
-      const res = await api("dashboard", { username: state.username, role: state.role, branch: state.branch });
-      if(!res.ok) return;
-
-      const d = res.dash;
-      const cards = [
-        { title:"Today Sale", val: money(d.todaySale), icon:"💰" },
-        { title:"Today Profit", val: money(d.todayProfit), icon:"📈" },
-        { title:"Month Sale", val: money(d.monthSale), icon:"📊" },
-        { title:"Month Profit", val: money(d.monthProfit), icon:"💎" },
-        { title:"Pending Total", val: money(d.pendingTotal), icon:"⏳" },
-        { title:"Issued Today", val: String(d.issuedToday), icon:"✅" },
-        { title:"On Hold Today", val: String(d.holdToday), icon:"⏸️" },
-      ];
-
-      $("dashCards").innerHTML = cards.map(c=>
-        `<div class="col-md-3 col-6 fade-in" style="animation-delay:${cards.indexOf(c)*0.1}s">
-          <div class="card stat-card">
-            <div class="title">${c.title}</div>
-            <div class="value">${c.val}</div>
-            <div class="mt-1">${c.icon}</div>
-          </div>
-        </div>`
-      ).join("");
-
-      const ctxT = $("chToday");
-      const ctxM = $("chMonth");
-      if(charts.today) charts.today.destroy();
-      if(charts.month) charts.month.destroy();
-
-      charts.today = new Chart(ctxT, {
-        type:"bar",
-        data:{ labels:["Sale","Profit"], datasets:[{ data:[d.todaySale, d.todayProfit], backgroundColor: ["#93c5fd", "#34d399"] }] },
-        options:{ 
-          responsive:true, 
-          plugins: { legend: { display: false } }, 
-          scales: { y: { beginAtZero: true } } 
-        }
-      });
-
-      charts.month = new Chart(ctxM, {
-        type:"bar",
-        data:{ labels:["Sale","Profit"], datasets:[{ data:[d.monthSale, d.monthProfit], backgroundColor: ["#60a5fa", "#10b981"] }] },
-        options:{ 
-          responsive:true, 
-          plugins: { legend: { display: false } }, 
-          scales: { y: { beginAtZero: true } } 
-        }
-      });
+    function updateEditCalc(){
+      const r = calcProfitPending($("eCost").value,$("eSale").value,$("eCash").value);
+      $("eProfit").textContent = money(r.profit);
+      $("ePending").textContent = money(r.pending);
     }
 
-    ["bkCost","bkSale","bkCash"].forEach(id=>{
-      $(id).addEventListener("input", ()=>{
-        const r = calcProfitPending($("bkCost").value, $("bkSale").value, $("bkCash").value);
-        $("bkProfit").value = money(r.profit);
-        $("bkPending").value = money(r.pending);
-      });
+    window.openEdit = async (sheet,rowIndex)=>{
+      if(SESSION.user.role!=="admin"){ alert("Admin only"); return; }
+      setMsg($("editMsg"), "");
+      $("eSheet").textContent = sheet;
+      $("eRow").textContent = rowIndex;
+
+      const out = await api("getRow",{sheet,rowIndex});
+      fillEdit(out.data);
+      editModal.show();
+    };
+
+    window.doDelete = async (sheet,rowIndex)=>{
+      if(SESSION.user.role!=="admin"){ alert("Admin only"); return; }
+      if(!confirm(`Delete booking?\nSheet: ${sheet}\nRow: ${rowIndex}`)) return;
+
+      await api("delete",{sheet,rowIndex});
+      alert("Deleted ✅");
+      await runSearch();
+      await loadDashboard();
+    };
+
+    $("btnSaveEdit").addEventListener("click", async ()=>{
+      try{
+        setMsg($("editMsg"), "Saving...", "muted");
+        const sheet = $("eSheet").textContent;
+        const rowIndex = $("eRow").textContent;
+
+        const payload = {
+          sheet, rowIndex,
+          customerName: $("eCustomerName").value.trim(),
+          mobile: $("eMobile").value.trim(),
+          pnr: $("ePNR").value.trim(),
+          tripType: $("eTripType").value,
+          travelDate: $("eTravelDate").value,
+          returnDate: $("eReturnDate").value,
+          airline: $("eAirline").value.trim(),
+          costPrice: $("eCost").value,
+          salePrice: $("eSale").value,
+          cashReceived: $("eCash").value,
+          paymentMode: $("ePayMode").value,
+          bookingStatus: $("eStatus").value
+        };
+
+        await api("update", payload);
+        setMsg($("editMsg"), "Saved ✅", "good");
+        await runSearch();
+        await loadDashboard();
+        setTimeout(()=>editModal.hide(), 600);
+      }catch(e){
+        setMsg($("editMsg"), e.message, "bad");
+      }
+    });
+
+    ["eCost","eSale","eCash"].forEach(id=>{
+      $(id).addEventListener("input", updateEditCalc);
+    });
+
+    /************ ADD BOOKING ************/
+    function updateAddCalc(){
+      const r = calcProfitPending($("aCost").value,$("aSale").value,$("aCash").value);
+      $("aProfit").textContent = money(r.profit);
+      $("aPending").textContent = money(r.pending);
+    }
+    ["aCost","aSale","aCash"].forEach(id=>{
+      $(id).addEventListener("input", updateAddCalc);
     });
 
     $("btnAdd").addEventListener("click", async ()=>{
-      $("addMsg").textContent = "";
-      const isAdmin = String(state.role).toLowerCase()==="admin";
+      try{
+        setMsg($("addMsg"), "Saving...", "muted");
 
-      const payload = {
-        username: state.username,
-        role: state.role,
-        targetBranch: isAdmin ? $("bkBranch").value : "",
-        customerName: $("bkCustomer").value.trim(),
-        mobile: $("bkMobile").value.trim(),
-        pnr: $("bkPNR").value.trim(),
-        tripType: $("bkTrip").value,
-        travelDate: $("bkTravel").value,
-        returnDate: $("bkReturn").value,
-        airline: $("bkAirline").value.trim(),
-        costPrice: $("bkCost").value.trim(),
-        salePrice: $("bkSale").value.trim(),
-        cashReceived: $("bkCash").value.trim(),
-        paymentMode: $("bkPayMode").value,
-        bookingStatus: $("bkStatus").value
-      };
+        const u = SESSION.user;
+        const payload = {
+          // for admin: you can later add a dropdown for branch in UI (optional)
+          branch: u.role==="admin" ? ( $("branchFilter").value || "Shahzad") : u.branch,
+          customerName: $("aCustomerName").value.trim(),
+          mobile: $("aMobile").value.trim(),
+          pnr: $("aPNR").value.trim(),
+          tripType: $("aTripType").value,
+          travelDate: $("aTravelDate").value,
+          returnDate: $("aReturnDate").value,
+          airline: $("aAirline").value.trim(),
+          costPrice: $("aCost").value,
+          salePrice: $("aSale").value,
+          cashReceived: $("aCash").value,
+          paymentMode: $("aPayMode").value,
+          bookingStatus: $("aStatus").value
+        };
 
-      const res = await api("addBooking", payload);
-      if(!res.ok){ 
-        $("addMsg").textContent = "❌ " + (res.message || "Save failed"); 
-        $("addMsg").className="mt-2 small text-danger";
-        return; 
+        await api("add", payload);
+        setMsg($("addMsg"), "Saved ✅", "good");
+
+        // Clear basic fields
+        ["aCustomerName","aMobile","aPNR","aAirline"].forEach(id=>$(id).value="");
+        ["aCost","aSale","aCash"].forEach(id=>$(id).value=0);
+        updateAddCalc();
+
+        await loadDashboard();
+        showTab("bookings");
+        await runSearch();
+      }catch(e){
+        setMsg($("addMsg"), e.message, "bad");
       }
+    });
 
-      $("addMsg").textContent = `✅ Saved! Invoice: ${res.invoice}`;
-      $("addMsg").className="mt-2 small text-success";
+    /************ CUSTOMERS ************/
+    $("btnLoadCustomers").addEventListener("click", async ()=>{
+      try{
+        setMsg($("custMsg"), "Loading...", "muted");
+        const out = await api("search",{ q:"", branch:$("branchFilter").value });
+        const map = new Map(); // mobile => {name,mobile,branch,last}
+        out.results.forEach(r=>{
+          const d=r.data;
+          const key = (d.Mobile||"").trim() || (d.CustomerName||"").trim();
+          if(!key) return;
+          const current = map.get(key);
+          if(!current || (d.DateTime||"") > (current.last||"")){
+            map.set(key,{ name:d.CustomerName, mobile:d.Mobile, branch:d.Branch, last:d.DateTime });
+          }
+        });
+        const list = Array.from(map.values()).sort((a,b)=>(b.last||"").localeCompare(a.last||""));
 
-      ["bkCustomer","bkMobile","bkPNR","bkAirline","bkCost","bkSale"].forEach(x=>$(x).value="");
-      $("bkCash").value="0";
-      $("bkProfit").value="";
-      $("bkPending").value="";
-      refreshDash();
+        $("custRows").innerHTML = list.map(x=>`
+          <tr>
+            <td>${x.name||""}</td>
+            <td class="mono">${x.mobile||""}</td>
+            <td>${x.branch||""}</td>
+            <td class="small-muted mono">${x.last||""}</td>
+          </tr>
+        `).join("");
+
+        setMsg($("custMsg"), `${list.length} customer(s) loaded ✅`, "good");
+      }catch(e){
+        setMsg($("custMsg"), e.message, "bad");
+      }
+    });
+
+    /************ LOGIN / LOGOUT ************/
+    $("btnLogin").addEventListener("click", async ()=>{
+      try{
+        setMsg($("loginMsg"), "Logging in...", "muted");
+        const out = await api("login", {
+          username: $("loginUser").value.trim(),
+          password: $("loginPass").value.trim()
+        });
+        SESSION = { token: out.token, user: out.user };
+        saveSession();
+
+        $("viewLogin").classList.add("hidden");
+        $("viewApp").classList.remove("hidden");
+
+        setWhoAmI();
+        fillBranchFilter();
+        await loadDashboard();
+        showTab("dash");
+        setMsg($("loginMsg"), "", "muted");
+      }catch(e){
+        setMsg($("loginMsg"), e.message, "bad");
+      }
+    });
+
+    $("btnLogout").addEventListener("click", async ()=>{
+      try{
+        if(SESSION?.token){
+          await api("logout",{});
+        }
+      }catch(e){}
+      clearSession();
+      $("viewApp").classList.add("hidden");
+      $("viewLogin").classList.remove("hidden");
+      setWhoAmI();
+    });
+
+    $("btnRefresh").addEventListener("click", async ()=>{
+      await loadDashboard();
+      await runSearch();
     });
 
     $("btnSearch").addEventListener("click", runSearch);
 
-    async function runSearch(includeDeleted=false){
-      $("srBody").innerHTML = "";
-      $("srCount").textContent = "⏳ Loading...";
-      const isAdmin = String(state.role).toLowerCase()==="admin";
-
-      const payload = {
-        username: state.username,
-        query: $("srQuery").value.trim(),
-        dateMode: $("srDateMode").value,
-        branch: isAdmin ? $("srBranch").value : "",
-        includeDeleted: includeDeleted ? "1" : ""
-      };
-
-      const res = await api("search", payload);
-      if(!res.ok){ $("srCount").textContent = "❌ " + (res.message || "Search failed"); return; }
-
-      const rows = res.rows || [];
-      $("srCount").textContent = `✅ Found ${rows.length} record${rows.length!==1?'s':''}`;
-
-      $("srBody").innerHTML = rows.map(r=>{
-        const d = r.data || {};
-        return `<tr>
-          <td>${d["Branch"]||r.sheet}</td>
-          <td>${d["Invoice No"]||""}</td>
-          <td>${d["Customer Name"]||""}</td>
-          <td>${d["Mobile"]||""}</td>
-          <td>${d["PNR / Ticket"]||""}</td>
-          <td>${d["Trip Type"]||""}</td>
-          <td>${d["Travel Date"]||""}</td>
-          <td>${d["Return Date"]||""}</td>
-          <td>${d["Airline"]||""}</td>
-          <td class="text-end">${money(d["Cost Price"])}</td>
-          <td class="text-end">${money(d["Sale Price"])}</td>
-          <td class="text-end text-success">${money(d["Profit"])}</td>
-          <td class="text-end">${money(d["Cash Received"])}</td>
-          <td class="text-end text-warning">${money(d["Pending"])}</td>
-          <td>${d["Payment Mode"]||""}</td>
-          <td><span class="badge ${d["Booking Status"]==="Issued"?"bg-success":"bg-warning"}">${d["Booking Status"]||""}</span></td>
-          <td>${d["Date & Time"]||""}</td>
-          ${isAdmin ? `<td>
-            <button class="btn btn-sm btn-outline-primary" onclick="openEdit('${r.sheet}', ${r.rowNumber})">✏️</button>
-            <button class="btn btn-sm btn-outline-danger" onclick="softDelete('${r.sheet}', ${r.rowNumber})">🗑️</button>
-            <button class="btn btn-sm btn-outline-success" onclick="waMsg('${d["Mobile"]||""}','${d["PNR / Ticket"]||""}','${d["Customer Name"]||""}','${d["Travel Date"]||""}','${money(d["Sale Price"])}','${money(d["Pending"])}')">📱</button>
-          </td>` : ""} 
-        </tr>`;
-      }).join("");
-    }
-
-    window.softDelete = async (sheet, rowNumber)=>{
-      if(!confirm("⚠️ Soft delete this booking?")) return;
-      const res = await api("deleteBooking", { username: state.username, sheet, rowNumber });
-      if(!res.ok){ alert("❌ "+(res.message||"Failed")); return; }
-      alert("✅ Deleted to recycle bin");
-      runSearch();
-      refreshDash();
-    };
-
-    window.openEdit = async (sheet, rowNumber)=>{
-      const res = await api("getRow", { username: state.username, sheet, rowNumber });
-      if(!res.ok){ alert("❌ "+(res.message||"Fetch failed")); return; }
-
-      editCtx = { sheet, rowNumber };
-      const d = res.data;
-
-      $("editMeta").textContent = `Sheet: ${sheet} • Row: ${rowNumber} • Invoice: ${d["Invoice No"] || "N/A"}`;
-
-      $("edCustomer").value = d["Customer Name"]||"";
-      $("edMobile").value = d["Mobile"]||"";
-      $("edPNR").value = d["PNR / Ticket"]||"";
-      $("edTrip").value = d["Trip Type"]||"One Way";
-      $("edTravel").value = d["Travel Date"]||"";
-      $("edReturn").value = d["Return Date"]||"";
-      $("edAirline").value = d["Airline"]||"";
-      $("edCost").value = d["Cost Price"]||"";
-      $("edSale").value = d["Sale Price"]||"";
-      $("edCash").value = d["Cash Received"]||"0";
-      $("edPay").value = d["Payment Mode"]||"Cash";
-      $("edStatus").value = d["Booking Status"]||"On Hold";
-
-      const rr = calcProfitPending($("edCost").value, $("edSale").value, $("edCash").value);
-      $("edProfit").value = money(rr.profit);
-      $("edPending").value = money(rr.pending);
-
-      $("edMsg").textContent = "";
-      new bootstrap.Modal(document.getElementById("editModal")).show();
-    };
-
-    ["edCost","edSale","edCash"].forEach(id=>{
-      $(id).addEventListener("input", ()=>{
-        const r = calcProfitPending($("edCost").value, $("edSale").value, $("edCash").value);
-        $("edProfit").value = money(r.profit);
-        $("edPending").value = money(r.pending);
+    // Tabs
+    document.querySelectorAll("#tabs .nav-link").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        showTab(btn.dataset.tab);
       });
     });
 
-    $("btnSaveEdit").addEventListener("click", async ()=>{
-      $("edMsg").textContent = "";
-      const p = {
-        username: state.username,
-        sheet: editCtx.sheet,
-        rowNumber: editCtx.rowNumber,
-        customerName: $("edCustomer").value.trim(),
-        mobile: $("edMobile").value.trim(),
-        pnr: $("edPNR").value.trim(),
-        tripType: $("edTrip").value,
-        travelDate: $("edTravel").value,
-        returnDate: $("edReturn").value,
-        airline: $("edAirline").value.trim(),
-        costPrice: $("edCost").value.trim(),
-        salePrice: $("edSale").value.trim(),
-        cashReceived: $("edCash").value.trim(),
-        paymentMode: $("edPay").value,
-        bookingStatus: $("edStatus").value
-      };
+    // Init calc
+    updateAddCalc();
 
-      const res = await api("updateBooking", p);
-      if(!res.ok){ $("edMsg").textContent = "❌ "+(res.message||"Update failed"); return; }
+    // Auto-login if session exists
+    (async function init(){
+      const s = loadSession();
+      if(!s?.token) return;
+      SESSION=s;
 
-      bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
-      runSearch();
-      refreshDash();
-      setTimeout(()=>alert("✅ Booking updated successfully!"), 100);
-    });
-
-    $("btnLoadDeleted").addEventListener("click", async ()=>{
-      const res = await api("search", {
-        username: state.username,
-        query: "",
-        dateMode: "",
-        branch: "ALL",
-        includeDeleted: "1"
-      });
-      if(!res.ok){ alert("❌ "+(res.message||"Load failed")); return; }
-
-      const del = (res.rows||[]).filter(x => String((x.data||{})["Booking Status"]||"").toLowerCase()==="deleted");
-      $("delBody").innerHTML = del.map(r=>{
-        const d = r.data||{};
-        return `<tr>
-          <td>${r.sheet}</td>
-          <td>${d["Invoice No"]||""}</td>
-          <td>${d["Customer Name"]||""}</td>
-          <td>${d["Mobile"]||""}</td>
-          <td>${d["PNR / Ticket"]||""}</td>
-          <td class="text-end">${money(d["Sale Price"])}</td>
-          <td><span class="badge bg-danger">Deleted</span></td>
-          <td><button class="btn btn-sm btn-success" onclick="restoreRow('${r.sheet}', ${r.rowNumber})">↩️ Restore</button></td>
-        </tr>`;
-      }).join("");
-    });
-
-    window.restoreRow = async (sheet, rowNumber)=>{
-      if(!confirm("Restore this booking to 'On Hold' status?")) return;
-      const res = await api("restoreBooking", { username: state.username, sheet, rowNumber, restoreTo:"On Hold" });
-      if(!res.ok){ alert("❌ "+(res.message||"Restore failed")); return; }
-      alert("✅ Restored successfully");
-      $("btnLoadDeleted").click();
-      runSearch();
-      refreshDash();
-    };
-
-    window.waMsg = (mobile, pnr, name, travel, sale, pending)=>{
-      const text = `✈️ *Booking Invoice*\n\n👤 Name: ${name}\n🎫 PNR: ${pnr}\n📅 Travel: ${travel}\n💸 Total: ${sale}\n⏳ Pending: ${pending}`;
-      const url = `https://wa.me/${mobile}?text=${encodeURIComponent(text)}`;
-      window.open(url, "_blank");
-    };
-
-    (function init(){
-      const sess = loadSession();
-      if(sess && sess.username){
-        state = sess;
-        afterLogin();
+      try{
+        $("viewLogin").classList.add("hidden");
+        $("viewApp").classList.remove("hidden");
+        setWhoAmI();
+        fillBranchFilter();
+        await loadDashboard();
+        showTab("dash");
+        await runSearch();
+      }catch(e){
+        clearSession();
+        $("viewApp").classList.add("hidden");
+        $("viewLogin").classList.remove("hidden");
+        setMsg($("loginMsg"), "Session expired. Please login again.", "bad");
       }
     })();
   </script>
 </body>
 </html>
+
